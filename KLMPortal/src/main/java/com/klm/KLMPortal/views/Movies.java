@@ -20,6 +20,7 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.shared.ui.combobox.FilteringMode;
@@ -36,6 +37,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -48,6 +50,10 @@ public class Movies extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 1L;
 
+	private Navigator nav = UI.getCurrent().getNavigator();
+	private HorizontalLayout navLayout = new HorizontalLayout();
+	private static final String GEN_INFO = "generalInfo";
+	
 	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
 	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
 
@@ -119,6 +125,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setMainLayout() {
 
+		setNavLayout();
 		buttonsLayout = new HorizontalLayout();
 		buttonsLayout.setSizeFull();
 
@@ -183,6 +190,35 @@ public class Movies extends VerticalLayout implements View {
 
 	}
 
+	private void setNavLayout() {
+		navLayout.setMargin(true);
+		navLayout.setSpacing(true);
+		Button startViewButton = new Button("Start View", new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo("");
+			}
+		});
+		navLayout.addComponent(startViewButton);
+		navLayout.setComponentAlignment(startViewButton, Alignment.TOP_CENTER);
+		Button genInfoButton = new Button("General Info View", new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo(GEN_INFO);
+			}
+		});
+		navLayout.addComponent(genInfoButton);
+		navLayout.setComponentAlignment(genInfoButton, Alignment.TOP_CENTER);
+		addComponent(navLayout);
+		setComponentAlignment(navLayout, Alignment.TOP_CENTER);
+	}
+	
 	private void setMoviePopupWindow(boolean newMovie, boolean watched, MovieBean movie) {
 
 		movieWindow = new Window("New Movie");
@@ -220,7 +256,7 @@ public class Movies extends VerticalLayout implements View {
 		movieWindowLayout.addComponent(movieWatchedCheckBox);
 
 		movieRatingComboBox = new ComboBox("Rating");
-		movieRatingComboBox.addItems(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+		movieRatingComboBox.addItems(Arrays.asList(1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10));
 		if (newMovie) {
 			movieRatingComboBox.setInputPrompt("rating?");
 			movieRatingComboBox.setVisible(false);
