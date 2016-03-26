@@ -53,7 +53,7 @@ public class Movies extends VerticalLayout implements View {
 	private Navigator nav = UI.getCurrent().getNavigator();
 	private HorizontalLayout navLayout = new HorizontalLayout();
 	private static final String GEN_INFO = "generalInfo";
-	
+
 	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
 	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
 
@@ -148,9 +148,10 @@ public class Movies extends VerticalLayout implements View {
 		addMovieButton = new Button("Add", new AddMovieButtonListener());
 		buttonsLayout.addComponent(addMovieButton);
 		buttonsLayout.setComponentAlignment(addMovieButton, Alignment.TOP_LEFT);
-		
+
 		searchMovieComboBox = new ComboBox("Search");
-		BeanItemContainer<MovieBean> moviesContainer = new BeanItemContainer<>(MovieBean.class, portalDAO.getAllMovies());
+		BeanItemContainer<MovieBean> moviesContainer = new BeanItemContainer<>(MovieBean.class,
+				portalDAO.getAllMovies());
 		searchMovieComboBox.setContainerDataSource(moviesContainer);
 		searchMovieComboBox.setFilteringMode(FilteringMode.CONTAINS);
 		searchMovieComboBox.setItemCaptionMode(ItemCaptionMode.PROPERTY);
@@ -158,7 +159,7 @@ public class Movies extends VerticalLayout implements View {
 		searchMovieComboBox.addValueChangeListener(new SeachMovieComboBoxListener());
 		buttonsLayout.addComponent(searchMovieComboBox);
 		buttonsLayout.setComponentAlignment(searchMovieComboBox, Alignment.TOP_LEFT);
-		
+
 		buttonsLayout.addComponent(new Button("JPA", new ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -218,7 +219,7 @@ public class Movies extends VerticalLayout implements View {
 		addComponent(navLayout);
 		setComponentAlignment(navLayout, Alignment.TOP_CENTER);
 	}
-	
+
 	private void setMoviePopupWindow(boolean newMovie, boolean watched, MovieBean movie) {
 
 		movieWindow = new Window("New Movie");
@@ -256,7 +257,8 @@ public class Movies extends VerticalLayout implements View {
 		movieWindowLayout.addComponent(movieWatchedCheckBox);
 
 		movieRatingComboBox = new ComboBox("Rating");
-		movieRatingComboBox.addItems(Arrays.asList(1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10));
+		movieRatingComboBox
+				.addItems(Arrays.asList(1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10));
 		if (newMovie) {
 			movieRatingComboBox.setInputPrompt("rating?");
 			movieRatingComboBox.setVisible(false);
@@ -303,29 +305,28 @@ public class Movies extends VerticalLayout implements View {
 		movieWindowButtonsLayout = new HorizontalLayout();
 		movieWindowButtonsLayout.setMargin(true);
 		movieWindowButtonsLayout.setSpacing(true);
-		
+
 		editButton = new Button("Edit", new EditMovieButtonListener());
 		movieWindowButtonsLayout.addComponent(editButton);
 
-		submitButton = new Button("Submit", new SubmitMovieButtonListener(movie != null ? movie.getId() :  null));
+		submitButton = new Button("Submit", new SubmitMovieButtonListener(movie != null ? movie.getId() : null));
 		movieWindowButtonsLayout.addComponent(submitButton);
-		
-		deleteButton = new Button("Delete", new DeleteMovieButtonListener(movie != null ? movie.getId() :  null));
+
+		deleteButton = new Button("Delete", new DeleteMovieButtonListener(movie != null ? movie.getId() : null));
 		movieWindowButtonsLayout.addComponent(deleteButton);
-		
+
 		Button closeButton = new Button("Close", new ClickListener() {
-			
-			
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				movieWindow.close();
-				
+
 			}
 		});
 		movieWindowButtonsLayout.addComponent(closeButton);
-		
+
 		if (newMovie) {
 			editButton.setVisible(false);
 			deleteButton.setVisible(false);
@@ -347,8 +348,9 @@ public class Movies extends VerticalLayout implements View {
 		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Recommend", "Watched", "Comment" });
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
-//		moviesTable.removeItemClickListener(movieItemClickListener);
-//		moviesTable.addItemClickListener(new MovieItemClickListener(false, true));
+		// moviesTable.removeItemClickListener(movieItemClickListener);
+		// moviesTable.addItemClickListener(new MovieItemClickListener(false,
+		// true));
 	}
 
 	private void setWatchedMoviesTable(ArrayList<MovieBean> watchedMovies) {
@@ -360,8 +362,9 @@ public class Movies extends VerticalLayout implements View {
 		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Recommend", "Comment" });
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
-//		moviesTable.removeItemClickListener(movieItemClickListener);
-//		moviesTable.addItemClickListener(new MovieItemClickListener(false, true));
+		// moviesTable.removeItemClickListener(movieItemClickListener);
+		// moviesTable.addItemClickListener(new MovieItemClickListener(false,
+		// true));
 	}
 
 	private void setToWatchMoviesTable(ArrayList<MovieBean> toWatchMovies) {
@@ -373,8 +376,9 @@ public class Movies extends VerticalLayout implements View {
 		moviesTable.setColumnHeaders(new String[] { "Name", "Comment" });
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(false);
-//		moviesTable.removeItemClickListener(movieItemClickListener);
-//		moviesTable.addItemClickListener(new MovieItemClickListener(false, false));
+		// moviesTable.removeItemClickListener(movieItemClickListener);
+		// moviesTable.addItemClickListener(new MovieItemClickListener(false,
+		// false));
 	}
 
 	private void setRecommendedMoviesTable(ArrayList<MovieBean> recommendedMovies) {
@@ -386,8 +390,9 @@ public class Movies extends VerticalLayout implements View {
 		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Comment" });
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
-//		moviesTable.removeItemClickListener(movieItemClickListener);
-//		moviesTable.addItemClickListener(new MovieItemClickListener(false, true));
+		// moviesTable.removeItemClickListener(movieItemClickListener);
+		// moviesTable.addItemClickListener(new MovieItemClickListener(false,
+		// true));
 	}
 
 	// -------------------------------------------------//
@@ -496,14 +501,20 @@ public class Movies extends VerticalLayout implements View {
 				if (movieWatchedCheckBox.getValue()) {
 					if (movieRatingComboBox.getValue() != null && movieRecommendedCheckBox.getValue() != null) {
 						if (editFlag) {
-							portalDAO.editMovie(movieNameTextField.getValue(), true,
-									Integer.valueOf(movieRatingComboBox.getValue().toString()),
-									movieCommentField.getValue() != null ? movieCommentField.getValue() : null, new Date(movieDateField.getValue().getTime()),
+							portalDAO
+									.editMovie(movieNameTextField.getValue(), true,
+											Double.valueOf(movieRatingComboBox.getValue().toString()),
+											movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
+											movieDateField.getValue() != null
+													? new Date(movieDateField.getValue().getTime()) : null,
 									movieRecommendedCheckBox.getValue(), id);
 						} else {
-							portalDAO.addNewMovie(movieNameTextField.getValue(), true,
-									Integer.valueOf(movieRatingComboBox.getValue().toString()),
-									movieCommentField.getValue() != null ? movieCommentField.getValue() : null, new Date(movieDateField.getValue().getTime()),
+							portalDAO
+									.addNewMovie(movieNameTextField.getValue(), true,
+											Double.valueOf(movieRatingComboBox.getValue().toString()),
+											movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
+											movieDateField.getValue() != null
+													? new Date(movieDateField.getValue().getTime()) : null,
 									movieRecommendedCheckBox.getValue());
 						}
 					} else {
@@ -551,22 +562,23 @@ public class Movies extends VerticalLayout implements View {
 		}
 
 	}
-	
+
 	private class DeleteMovieButtonListener implements ClickListener {
 
 		private static final long serialVersionUID = 1L;
-		
+
 		private Integer id;
 
 		private DeleteMovieButtonListener(Integer id) {
 			this.id = id;
 		}
+
 		@Override
 		public void buttonClick(ClickEvent event) {
 			portalDAO.deleteMovie(id);
 			movieWindow.close();
 		}
-		
+
 	}
 
 	public class AddMovieWatchedCheckBoxListener implements ValueChangeListener {
@@ -595,14 +607,11 @@ public class Movies extends VerticalLayout implements View {
 
 		public MovieItemClickListener() {
 		}
-		
-		
+
 		public MovieItemClickListener(boolean newMovie, boolean watched) {
 			this.newMovie = newMovie;
 			this.watched = watched;
 		}
-		
-		
 
 		public void setNewMovie(boolean newMovie) {
 			this.newMovie = newMovie;
@@ -612,16 +621,15 @@ public class Movies extends VerticalLayout implements View {
 			this.watched = watched;
 		}
 
-		
-
 		private static final long serialVersionUID = 1L;
 
 		@Override
 		public void itemClick(ItemClickEvent event) {
 			if (event.isDoubleClick()) {
 				MovieBean selectedMovie = (MovieBean) moviesTable.getValue();
-				
-				System.out.println("Open MOVIE window NOW! id: " + selectedMovie.getId() + " name: " +  selectedMovie.getName());
+
+				System.out.println(
+						"Open MOVIE window NOW! id: " + selectedMovie.getId() + " name: " + selectedMovie.getName());
 				System.out.println("newMovie: " + newMovie + " watched: " + watched);
 				setMoviePopupWindow(newMovie, watched, selectedMovie);
 			}
@@ -640,7 +648,7 @@ public class Movies extends VerticalLayout implements View {
 		}
 
 	}
-	
+
 	private class SeachMovieComboBoxListener implements ValueChangeListener {
 
 		private static final long serialVersionUID = 1L;
@@ -648,12 +656,11 @@ public class Movies extends VerticalLayout implements View {
 		@Override
 		public void valueChange(ValueChangeEvent event) {
 			if (searchMovieComboBox.getValue() != null) {
-			setMoviePopupWindow(false, true, (MovieBean)searchMovieComboBox.getValue());
+				setMoviePopupWindow(false, true, (MovieBean) searchMovieComboBox.getValue());
 			}
 		}
-		
+
 	}
-	
 
 	public void getWiki() {
 

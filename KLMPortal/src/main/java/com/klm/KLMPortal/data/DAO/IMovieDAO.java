@@ -14,7 +14,7 @@ public interface IMovieDAO {
 	public ArrayList<MovieBean> getAllRecommendedMovies();
 	
 //	public void addToWatchMovie(String name, String comment);
-	public void addNewMovie(String name, Boolean watched, Integer rating, String comment, Date date, Boolean recommend);
-	public void editMovie(String name, Boolean watched, Integer rating, String comment, Date date, Boolean recommend, Integer id);
+	public void addNewMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend);
+	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend, Integer id);
 	public void deleteMovie(Integer id);
 }

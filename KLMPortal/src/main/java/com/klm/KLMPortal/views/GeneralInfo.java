@@ -97,8 +97,8 @@ public class GeneralInfo extends VerticalLayout implements View {
 		setEventLayout();
 		setNavLayout();
 		addComponent(panel);
-//		setExpandRatio(navLayout, 1);
-//		setExpandRatio(panel, 10);
+		setExpandRatio(navLayout, 1);
+		setExpandRatio(panel, 10);
 	}
 	
 	private void setNavLayout() {
