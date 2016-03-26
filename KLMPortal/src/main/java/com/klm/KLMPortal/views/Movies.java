@@ -52,6 +52,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private Navigator nav = UI.getCurrent().getNavigator();
 	private HorizontalLayout navLayout = new HorizontalLayout();
+	private HorizontalLayout moviesLayout = new HorizontalLayout();
 	private static final String GEN_INFO = "generalInfo";
 
 	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
@@ -71,6 +72,9 @@ public class Movies extends VerticalLayout implements View {
 	private CheckBox movieRecommendedCheckBox;
 	private TextField movieCommentField;
 	private PopupDateField movieDateField;
+	private TextField movieWatchedBecauseTextField;
+	private ComboBox movieSadnessLevelComboBox;
+	
 	private HorizontalLayout movieWindowButtonsLayout;
 	private Button editButton;
 	private Button submitButton;
@@ -89,7 +93,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private Table moviesTable;
 	private MovieItemClickListener movieItemClickListener = new MovieItemClickListener();
-	private HorizontalLayout buttonsLayout;
+	private VerticalLayout buttonsLayout;
 	private VerticalLayout tablesLayout;
 
 	public Movies(EntityManager em) {
@@ -126,7 +130,9 @@ public class Movies extends VerticalLayout implements View {
 	private void setMainLayout() {
 
 		setNavLayout();
-		buttonsLayout = new HorizontalLayout();
+		
+		
+		buttonsLayout = new VerticalLayout();
 		buttonsLayout.setSizeFull();
 
 		getAllMoviesButton = new Button("All", new AllFilmsButtonListener());
@@ -178,21 +184,25 @@ public class Movies extends VerticalLayout implements View {
 		// Alignment.BOTTOM_RIGHT);
 
 		tablesLayout = new VerticalLayout();
+		tablesLayout.setSpacing(true);
 		moviesTable = new Table("Movies");
 		moviesTable.setSelectable(true);
 		moviesTable.setNullSelectionAllowed(false);
 		moviesTable.addItemClickListener(movieItemClickListener);
 		tablesLayout.addComponent(moviesTable);
 
-		addComponent(buttonsLayout);
-		addComponent(tablesLayout);
-		setExpandRatio(buttonsLayout, 1.0f);
-		setExpandRatio(tablesLayout, 5.0f);
-
+		
+		moviesLayout.addComponent(buttonsLayout);
+		moviesLayout.addComponent(tablesLayout);
+		moviesLayout.setExpandRatio(buttonsLayout, 1.0f);
+		moviesLayout.setExpandRatio(tablesLayout, 5.0f);
+		addComponent(moviesLayout);
+		setExpandRatio(navLayout, 2);
+		setExpandRatio(moviesLayout, 10);
 	}
 
 	private void setNavLayout() {
-		navLayout.setMargin(true);
+//		navLayout.setMargin(true);
 		navLayout.setSpacing(true);
 		Button startViewButton = new Button("Start View", new Button.ClickListener() {
 
@@ -223,11 +233,12 @@ public class Movies extends VerticalLayout implements View {
 	private void setMoviePopupWindow(boolean newMovie, boolean watched, MovieBean movie) {
 
 		movieWindow = new Window("New Movie");
-		movieWindow.setWidth("20%");
-		movieWindow.setHeight("60%");
+		movieWindow.setWidth("30%");
+		movieWindow.setHeight("70%");
 		movieWindowLayout = new FormLayout();
 		movieWindowLayout.setSpacing(true);
 		movieWindowLayout.setMargin(true);
+		movieWindow.setModal(true);
 
 		if (!newMovie) {
 			watched = movie.isWatched();
@@ -239,7 +250,6 @@ public class Movies extends VerticalLayout implements View {
 			movieNameTextField.setValue(movie.getName());
 			movieNameTextField.setReadOnly(true);
 		}
-		movieNameTextField.setImmediate(true);
 		movieWindowLayout.addComponent(movieNameTextField);
 
 		movieCommentField = new TextField("Comment");
@@ -258,13 +268,14 @@ public class Movies extends VerticalLayout implements View {
 
 		movieRatingComboBox = new ComboBox("Rating");
 		movieRatingComboBox
-				.addItems(Arrays.asList(1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10));
+				.addItems(Arrays.asList(1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0));
 		if (newMovie) {
 			movieRatingComboBox.setInputPrompt("rating?");
 			movieRatingComboBox.setVisible(false);
 		} else if (watched) {
 			movieRatingComboBox.setVisible(true);
-			movieRatingComboBox.setValue(movie.getRating());
+			System.out.println("movie.getRating().doubleValue()" + movie.getRating().doubleValue());
+			movieRatingComboBox.setValue(movie.getRating().doubleValue());
 			movieRatingComboBox.setReadOnly(true);
 		} else {
 			movieRatingComboBox.setVisible(false);
@@ -294,6 +305,34 @@ public class Movies extends VerticalLayout implements View {
 			movieDateField.setReadOnly(true);
 		}
 		movieWindowLayout.addComponent(movieDateField);
+		
+		movieSadnessLevelComboBox = new ComboBox("Sadness Level");
+		movieSadnessLevelComboBox
+				.addItems(Arrays.asList(1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5, 6.0, 6.5, 7.0, 7.5, 8.0, 8.5, 9.0, 9.5, 10.0));
+		if (newMovie) {
+			movieSadnessLevelComboBox.setInputPrompt("sadness level?");
+			movieSadnessLevelComboBox.setVisible(false);
+		} else if (watched) {
+			movieSadnessLevelComboBox.setVisible(true);
+			System.out.println("movie.getSadnessLevel() " + movie.getSadnessLevel());
+			movieSadnessLevelComboBox.setValue(movie.getSadnessLevel());
+			movieSadnessLevelComboBox.setReadOnly(true);
+		} else {
+			movieSadnessLevelComboBox.setVisible(false);
+			movieSadnessLevelComboBox.setReadOnly(true);
+		}
+		movieWindowLayout.addComponent(movieSadnessLevelComboBox);
+		
+		
+		movieWatchedBecauseTextField = new TextField("Watch Because");
+		if (newMovie) {
+			movieWatchedBecauseTextField.setInputPrompt("watch why?");
+		} else {
+			movieWatchedBecauseTextField.setValue(movie.getWatchedBecause());
+			movieWatchedBecauseTextField.setReadOnly(true);
+		}
+		movieWatchedBecauseTextField.setNullRepresentation("");
+		movieWindowLayout.addComponent(movieWatchedBecauseTextField);
 
 		movieWatchedCheckBox.addValueChangeListener(new AddMovieWatchedCheckBoxListener());
 		movieWatchedCheckBox.setImmediate(true);
@@ -302,6 +341,9 @@ public class Movies extends VerticalLayout implements View {
 			movieWatchedCheckBox.setReadOnly(true);
 		}
 
+		
+		
+		
 		movieWindowButtonsLayout = new HorizontalLayout();
 		movieWindowButtonsLayout.setMargin(true);
 		movieWindowButtonsLayout.setSpacing(true);
@@ -322,7 +364,7 @@ public class Movies extends VerticalLayout implements View {
 			@Override
 			public void buttonClick(ClickEvent event) {
 				movieWindow.close();
-
+				
 			}
 		});
 		movieWindowButtonsLayout.addComponent(closeButton);
@@ -344,8 +386,8 @@ public class Movies extends VerticalLayout implements View {
 		container.addAll(allMovieNames);
 		moviesTable.setCaption("Movies (All)");
 		moviesTable.setContainerDataSource(container);
-		moviesTable.setVisibleColumns(new Object[] { "name", "rating", "recommend", "watched", "comment" });
-		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Recommend", "Watched", "Comment" });
+		moviesTable.setVisibleColumns(new Object[] {"name", "rating", "sadnessLevel", "recommend", "watched", "comment", "watchedBecause"});
+		moviesTable.setColumnHeaders(new String[] {"Name", "Rating", "Sadness", "Recommend", "Watched", "Comment", "Watch Because"});
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
 		// moviesTable.removeItemClickListener(movieItemClickListener);
@@ -358,8 +400,8 @@ public class Movies extends VerticalLayout implements View {
 		container.addAll(watchedMovies);
 		moviesTable.setCaption("Movies (Watched)");
 		moviesTable.setContainerDataSource(container);
-		moviesTable.setVisibleColumns(new Object[] { "name", "rating", "recommend", "comment" });
-		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Recommend", "Comment" });
+		moviesTable.setVisibleColumns(new Object[] {"name", "rating", "sadnessLevel", "recommend", "comment", "watchedBecause"});
+		moviesTable.setColumnHeaders(new String[] {"Name", "Rating", "Sadness", "Recommend", "Comment", "Watch Because"});
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
 		// moviesTable.removeItemClickListener(movieItemClickListener);
@@ -372,8 +414,8 @@ public class Movies extends VerticalLayout implements View {
 		container.addAll(toWatchMovies);
 		moviesTable.setCaption("Movies (To watch)");
 		moviesTable.setContainerDataSource(container);
-		moviesTable.setVisibleColumns(new Object[] { "name", "comment" });
-		moviesTable.setColumnHeaders(new String[] { "Name", "Comment" });
+		moviesTable.setVisibleColumns(new Object[] { "name", "comment", "watchedBecause"});
+		moviesTable.setColumnHeaders(new String[] { "Name", "Comment", "Watch Because"});
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(false);
 		// moviesTable.removeItemClickListener(movieItemClickListener);
@@ -386,8 +428,8 @@ public class Movies extends VerticalLayout implements View {
 		container.addAll(recommendedMovies);
 		moviesTable.setCaption("Movies (Recommended)");
 		moviesTable.setContainerDataSource(container);
-		moviesTable.setVisibleColumns(new Object[] { "name", "rating", "comment" });
-		moviesTable.setColumnHeaders(new String[] { "Name", "Rating", "Comment" });
+		moviesTable.setVisibleColumns(new Object[] {"name", "rating", "sadnessLevel", "comment", "watchedBecause"});
+		moviesTable.setColumnHeaders(new String[] {"Name", "Rating", "Sadness", "Comment", "Watch Because"});
 		movieItemClickListener.setNewMovie(false);
 		movieItemClickListener.setWatched(true);
 		// moviesTable.removeItemClickListener(movieItemClickListener);
@@ -507,7 +549,10 @@ public class Movies extends VerticalLayout implements View {
 											movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
 											movieDateField.getValue() != null
 													? new Date(movieDateField.getValue().getTime()) : null,
-									movieRecommendedCheckBox.getValue(), id);
+									movieRecommendedCheckBox.getValue(), 
+									movieWatchedBecauseTextField.getValue(),
+									movieSadnessLevelComboBox.getValue() != null ? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null,
+									id);
 						} else {
 							portalDAO
 									.addNewMovie(movieNameTextField.getValue(), true,
@@ -515,7 +560,9 @@ public class Movies extends VerticalLayout implements View {
 											movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
 											movieDateField.getValue() != null
 													? new Date(movieDateField.getValue().getTime()) : null,
-									movieRecommendedCheckBox.getValue());
+									movieRecommendedCheckBox.getValue(),
+									movieWatchedBecauseTextField.getValue(),
+									movieSadnessLevelComboBox.getValue() != null ? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null);
 						}
 					} else {
 						Notification.show("Pls, fill all required fields");
@@ -523,17 +570,17 @@ public class Movies extends VerticalLayout implements View {
 				} else {
 					if (editFlag) {
 						portalDAO.editMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(),
-								null, null, id);
+								null, null, movieWatchedBecauseTextField.getValue(), null, id);
 					} else {
 						portalDAO.addNewMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(),
-								null, null);
+								null, null, movieWatchedBecauseTextField.getValue(), null);
 					}
 				}
 			} else {
 				Notification.show("Pls, fill all required fields");
 			}
 			movieWindow.close();
-
+			
 		}
 	}
 
@@ -546,17 +593,20 @@ public class Movies extends VerticalLayout implements View {
 			movieNameTextField.setVisible(true);
 			movieWatchedCheckBox.setVisible(true);
 			movieCommentField.setVisible(true);
+			movieWatchedBecauseTextField.setVisible(true);
 			movieNameTextField.setReadOnly(false);
 			movieWatchedCheckBox.setReadOnly(false);
 			movieCommentField.setReadOnly(false);
-
+			movieWatchedBecauseTextField.setReadOnly(false);
 			if (movieWatchedCheckBox.getValue()) {
 				movieRatingComboBox.setVisible(true);
 				movieRecommendedCheckBox.setVisible(true);
 				movieDateField.setVisible(true);
+				movieSadnessLevelComboBox.setVisible(true);
 				movieRatingComboBox.setReadOnly(false);
 				movieRecommendedCheckBox.setReadOnly(false);
 				movieDateField.setReadOnly(false);
+				movieSadnessLevelComboBox.setReadOnly(false);
 			}
 			submitButton.setVisible(true);
 		}
@@ -591,10 +641,12 @@ public class Movies extends VerticalLayout implements View {
 				movieRatingComboBox.setVisible(true);
 				movieRecommendedCheckBox.setVisible(true);
 				movieDateField.setVisible(true);
+				movieSadnessLevelComboBox.setVisible(true);
 			} else {
 				movieRatingComboBox.setVisible(false);
 				movieRecommendedCheckBox.setVisible(false);
 				movieDateField.setVisible(false);
+				movieSadnessLevelComboBox.setVisible(false);
 			}
 		}
 

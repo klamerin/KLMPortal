@@ -264,7 +264,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 
 	@Override
 	public void addNewMovie(String name, Boolean watched, Double rating, String comment, Date date,
-			Boolean recommend) {
+			Boolean recommend, String watchedBecause, Double sadnessLevel) {
 		String sql = sqlMapping.getValue("Movie.addMovie");
 		Connection con = null;
 		int result = 0;
@@ -295,6 +295,16 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 				ps.setBoolean(6, recommend);
 			} else {
 				ps.setNull(6, Types.BIT);
+			}
+			if (watchedBecause != null) {
+				ps.setString(7, watchedBecause);
+			} else {
+				ps.setNull(7, Types.VARCHAR);
+			}
+			if (sadnessLevel != null) {
+				ps.setDouble(8, sadnessLevel);
+			} else {
+				ps.setNull(8, Types.DOUBLE);
 			}
 
 			result = ps.executeUpdate();
@@ -327,7 +337,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 	};
 
 	@Override
-	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend, Integer id) {
+	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer id) {
 		 //UPDATE FILMS SET COMMENT = ?, RATING = ?, RECOMMEND = ?, WATCHED = ?, WATCHED_DATE = ?, LAST_MODIFIED = GETDATE(), NAME = ? WHERE ID = ?
 		String sql = sqlMapping.getValue("Movie.editMovie");
 		Connection con = null;
@@ -360,7 +370,17 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 				ps.setNull(5, Types.TIMESTAMP);
 			}
 			ps.setString(6, name);
-			ps.setInt(7, id);
+			if (watchedBecause != null) {
+				ps.setString(7, watchedBecause);
+			} else {
+				ps.setNull(7, Types.VARCHAR);
+			}
+			if (sadnessLevel != null) {
+				ps.setDouble(8, sadnessLevel);
+			} else {
+				ps.setNull(8, Types.DOUBLE);
+			}
+			ps.setInt(9, id);
 
 			result = ps.executeUpdate();
 			con.commit();

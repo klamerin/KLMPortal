@@ -14,14 +14,14 @@ public class MovieBean {
 	private Timestamp lastModified;
 	private boolean recommend;
 	private String watchedBecause;
-	private double sadnessLevel;
+	private Double sadnessLevel;
 
 	public MovieBean() {
 		super();
 	}
 
 	public MovieBean(Integer id, String name, Double rating, String comment, boolean watched, Date watchedDate,
-			Timestamp lastModified, boolean recommend, String watchedBecause, double sadnessLevel) {
+			Timestamp lastModified, boolean recommend, String watchedBecause, Double sadnessLevel) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -99,11 +99,11 @@ public class MovieBean {
 		this.recommend = recommend;
 	}
 
-	public double getSadnessLevel() {
+	public Double getSadnessLevel() {
 		return sadnessLevel;
 	}
 
-	public void setSadnessLevel(double sadnessLevel) {
+	public void setSadnessLevel(Double sadnessLevel) {
 		this.sadnessLevel = sadnessLevel;
 	}
 
