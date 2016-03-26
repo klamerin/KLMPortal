@@ -14,6 +14,7 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
+import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -31,6 +32,7 @@ import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 
@@ -44,6 +46,11 @@ public class GeneralInfo extends VerticalLayout implements View {
 	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
 	private IGeneralInfoDAO generalInfoDAO = mssqlDAOFactory.getGeneralInfoDAO();
 
+	private Navigator nav = UI.getCurrent().getNavigator();
+	private HorizontalLayout navLayout = new HorizontalLayout();
+	private static final String FILMSVIEW = "films";
+	
+	
 	private HorizontalLayout infoLayout = new HorizontalLayout();
 	private VerticalLayout eventLayout = new VerticalLayout();
 	private HorizontalSplitPanel panel = new HorizontalSplitPanel(infoLayout, eventLayout);
@@ -88,9 +95,42 @@ public class GeneralInfo extends VerticalLayout implements View {
 		setSizeFull();
 		setInfoLayout();
 		setEventLayout();
+		setNavLayout();
 		addComponent(panel);
+//		setExpandRatio(navLayout, 1);
+//		setExpandRatio(panel, 10);
 	}
+	
+	private void setNavLayout() {
+		navLayout.setMargin(true);
+		navLayout.setSpacing(true);
+		Button startViewButton = new Button("Start View", new Button.ClickListener() {
 
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo("");
+			}
+		});
+		navLayout.addComponent(startViewButton);
+		navLayout.setComponentAlignment(startViewButton, Alignment.TOP_CENTER);
+		Button genInfoButton = new Button("Films", new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo(FILMSVIEW);
+			}
+		});
+		navLayout.addComponent(genInfoButton);
+		navLayout.setComponentAlignment(genInfoButton, Alignment.TOP_CENTER);
+		addComponent(navLayout);
+		setComponentAlignment(navLayout, Alignment.TOP_CENTER);
+	}
+	
+	
 	private void setInfoLayout() {
 		infoLayout.setMargin(true);
 		infoLayout.setSpacing(true);
