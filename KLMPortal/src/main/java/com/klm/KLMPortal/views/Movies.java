@@ -277,6 +277,19 @@ public class Movies extends VerticalLayout implements View {
 		deleteButton = new Button("Delete", new DeleteMovieButtonListener(movie != null ? movie.getId() :  null));
 		movieWindowButtonsLayout.addComponent(deleteButton);
 		
+		Button closeButton = new Button("Close", new ClickListener() {
+			
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				movieWindow.close();
+				
+			}
+		});
+		movieWindowButtonsLayout.addComponent(closeButton);
+		
 		if (newMovie) {
 			editButton.setVisible(false);
 			deleteButton.setVisible(false);
@@ -449,12 +462,12 @@ public class Movies extends VerticalLayout implements View {
 						if (editFlag) {
 							portalDAO.editMovie(movieNameTextField.getValue(), true,
 									Integer.valueOf(movieRatingComboBox.getValue().toString()),
-									movieCommentField.getValue(), new Date(movieDateField.getValue().getTime()),
+									movieCommentField.getValue() != null ? movieCommentField.getValue() : null, new Date(movieDateField.getValue().getTime()),
 									movieRecommendedCheckBox.getValue(), id);
 						} else {
 							portalDAO.addNewMovie(movieNameTextField.getValue(), true,
 									Integer.valueOf(movieRatingComboBox.getValue().toString()),
-									movieCommentField.getValue(), new Date(movieDateField.getValue().getTime()),
+									movieCommentField.getValue() != null ? movieCommentField.getValue() : null, new Date(movieDateField.getValue().getTime()),
 									movieRecommendedCheckBox.getValue());
 						}
 					} else {
@@ -598,8 +611,9 @@ public class Movies extends VerticalLayout implements View {
 
 		@Override
 		public void valueChange(ValueChangeEvent event) {
-			if (searchMovieComboBox.getValue() != null)
+			if (searchMovieComboBox.getValue() != null) {
 			setMoviePopupWindow(false, true, (MovieBean)searchMovieComboBox.getValue());
+			}
 		}
 		
 	}

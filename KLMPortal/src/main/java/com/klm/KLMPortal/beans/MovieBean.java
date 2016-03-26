@@ -3,6 +3,8 @@ package com.klm.KLMPortal.beans;
 import java.sql.Date;
 import java.sql.Timestamp;
 
+import javax.persistence.Column;
+
 public class MovieBean {
 
 	private Integer id;
@@ -13,9 +15,12 @@ public class MovieBean {
 	private Date watchedDate;
 	private Timestamp lastModified;
 	private boolean recommend;
-
+	private String watchedBecause;
+	private double sadnessLevel;
+	
+	
 	public MovieBean(Integer id, String name, Integer rating, String comment, boolean watched, Date watchedDate,
-			Timestamp lastModified, boolean recommend) {
+			Timestamp lastModified, boolean recommend, String watchedBecause, double sadnessLevel) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -25,6 +30,8 @@ public class MovieBean {
 		this.watchedDate = watchedDate;
 		this.lastModified = lastModified;
 		this.recommend = recommend;
+		this.watchedBecause = watchedBecause;
+		this.sadnessLevel = sadnessLevel;
 	}
 
 	public Integer getId() {
@@ -90,5 +97,12 @@ public class MovieBean {
 	public void setRecommend(boolean recommend) {
 		this.recommend = recommend;
 	}
+	
+	public double getSadnessLevel() {
+		return sadnessLevel;
+	}
 
+	public void setSadnessLevel(double sadnessLevel) {
+		this.sadnessLevel = sadnessLevel;
+	}
 }

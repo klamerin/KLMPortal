@@ -434,11 +434,25 @@ public class GeneralInfo extends VerticalLayout implements View {
 				newEventWindow.close();
 			}
 		});
+		
+		Button closeButton = new Button("Close", new ClickListener() {
+			
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				newEventWindow.close();
+				
+			}
+		});
+		
 		newEventLayout.addComponent(newEventNameField);
 		newEventLayout.addComponent(newEventCommentField);
 		newEventLayout.addComponent(newEventSetDateField);
 		newEventLayout.addComponent(newEventETADateField);
 		newEventLayout.addComponent(newEventSubmitButton);
+		newEventLayout.addComponent(closeButton);
 		newEventWindow.setContent(newEventLayout);
 		newEventWindow.setWidth("25%");
 		newEventWindow.setHeight("35%");
@@ -511,6 +525,19 @@ public class GeneralInfo extends VerticalLayout implements View {
 			});
 			newInfoLayout.addComponent(newInfoSubmitButton);
 		}
+		Button closeButton = new Button("Close", new ClickListener() {
+			
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				newInfoWindow.close();
+				
+			}
+		});
+		newInfoLayout.addComponent(closeButton);
+		
 		newInfoWindow.setContent(newInfoLayout);
 		newInfoWindow.setWidth("25%");
 		newInfoWindow.setHeight("35%");
@@ -589,6 +616,20 @@ public class GeneralInfo extends VerticalLayout implements View {
 			});
 			eventLayout.addComponent(eventSubmitButton);
 		}
+		Button closeButton = new Button("Close", new ClickListener() {
+			
+			
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				eventWindow.close();
+				
+			}
+		});
+		eventLayout.addComponent(closeButton);
+		
+		
 		eventWindow.setContent(eventLayout);
 		eventWindow.setWidth("25%");
 		eventWindow.setHeight("35%");
