@@ -85,7 +85,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getInt("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
 				films.add(film);
 			}
 			rslt.close();
@@ -134,7 +134,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getInt("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
 				films.add(film);
 			}
 			rslt.close();
@@ -183,7 +183,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getInt("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
 				films.add(film);
 			}
 			rslt.close();
@@ -232,7 +232,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getInt("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
 				films.add(film);
 			}
 			rslt.close();
