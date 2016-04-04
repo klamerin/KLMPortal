@@ -15,13 +15,16 @@ public class MovieBean {
 	private boolean recommend;
 	private String watchedBecause;
 	private Double sadnessLevel;
+	private Integer desireLevel;
+	private boolean rewatchNeeded;
+	private int watchCount;
 
 	public MovieBean() {
 		super();
 	}
 
 	public MovieBean(Integer id, String name, Double rating, String comment, boolean watched, Date watchedDate,
-			Timestamp lastModified, boolean recommend, String watchedBecause, Double sadnessLevel) {
+			Timestamp lastModified, boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, boolean rewatchNeeded, int watchCount) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -33,6 +36,9 @@ public class MovieBean {
 		this.recommend = recommend;
 		this.watchedBecause = watchedBecause;
 		this.sadnessLevel = sadnessLevel;
+		this.desireLevel = desireLevel;
+		this.rewatchNeeded = rewatchNeeded;
+		this.watchCount = watchCount;
 	}
 
 	public Integer getId() {
@@ -115,4 +121,32 @@ public class MovieBean {
 		this.watchedBecause = watchedBecause;
 	}
 
+	public Integer getDesireLevel() {
+		return desireLevel;
+	}
+
+	public void setDesireLevel(Integer desireLevel) {
+		this.desireLevel = desireLevel;
+	}
+
+	public boolean isRewatchNeeded() {
+		return rewatchNeeded;
+	}
+
+	public void setRewatchNeeded(boolean rewatchNeeded) {
+		this.rewatchNeeded = rewatchNeeded;
+	}
+
+	public int getWatchCount() {
+		return watchCount;
+	}
+
+	public void setWatchCount(int watchCount) {
+		this.watchCount = watchCount;
+	}
+
+	public void incrementWatchCount()
+	{
+		watchCount++;
+	}
 }

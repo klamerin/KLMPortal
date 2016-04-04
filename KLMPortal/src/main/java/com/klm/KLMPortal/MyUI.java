@@ -32,9 +32,9 @@ public class MyUI extends UI {
 	protected static final String FILMSVIEW = "films";
 	private static final String GEN_INFO = "generalInfo";
 
-	@PersistenceContext(name="persistence/em",unitName="KLMPortal")
+	@PersistenceContext(name = "persistence/em", unitName = "KLMPortal")
 	private EntityManager entityManager;
-	
+
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
 		getPage().setTitle("KLM Portal");
@@ -42,17 +42,17 @@ public class MyUI extends UI {
 		layout.setMargin(true);
 		setContent(layout);
 
-//		Button button = new Button("Click Me");
-//		button.addClickListener(new Button.ClickListener() {
-//
-//			private static final long serialVersionUID = 1L;
-//
-//			@Override
-//			public void buttonClick(ClickEvent event) {
-//				layout.addComponent(new Label("Thank you for clicking"));
-//			}
-//		});
-//		layout.addComponent(button);
+		// Button button = new Button("Click Me");
+		// button.addClickListener(new Button.ClickListener() {
+		//
+		// private static final long serialVersionUID = 1L;
+		//
+		// @Override
+		// public void buttonClick(ClickEvent event) {
+		// layout.addComponent(new Label("Thank you for clicking"));
+		// }
+		// });
+		// layout.addComponent(button);
 
 		// Create a navigator to control the views
 		nav = new Navigator(this, this);

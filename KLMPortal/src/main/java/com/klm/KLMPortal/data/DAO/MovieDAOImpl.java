@@ -85,7 +85,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"), rslt.getBoolean("REWATCH_NEEDED") ,rslt.getInt("WATCH_COUNT"));
 				films.add(film);
 			}
 			rslt.close();
@@ -134,7 +134,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"), rslt.getBoolean("REWATCH_NEEDED") ,rslt.getInt("WATCH_COUNT"));
 				films.add(film);
 			}
 			rslt.close();
@@ -183,7 +183,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"), rslt.getBoolean("REWATCH_NEEDED") ,rslt.getInt("WATCH_COUNT"));
 				films.add(film);
 			}
 			rslt.close();
@@ -232,7 +232,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
 						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("WATCHED_DATE"),
-						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"));
+						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"), rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"), rslt.getBoolean("REWATCH_NEEDED") ,rslt.getInt("WATCH_COUNT"));
 				films.add(film);
 			}
 			rslt.close();
@@ -264,7 +264,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 
 	@Override
 	public void addNewMovie(String name, Boolean watched, Double rating, String comment, Date date,
-			Boolean recommend, String watchedBecause, Double sadnessLevel) {
+			Boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded) {
 		String sql = sqlMapping.getValue("Movie.addMovie");
 		Connection con = null;
 		int result = 0;
@@ -306,12 +306,24 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			} else {
 				ps.setNull(8, Types.DOUBLE);
 			}
+			
+			if (desireLevel != null) {
+				ps.setInt(9, desireLevel);
+			} else {
+				ps.setNull(9, Types.INTEGER);
+			}
+			if (rewatchNeeded != null) {
+				ps.setBoolean(10, rewatchNeeded);
+			} else {
+				ps.setNull(10, Types.BIT);
+			}
+			ps.setInt(11, 1);
 
 			result = ps.executeUpdate();
 			con.commit();
 		} catch (SQLException e) {
 			System.out.println("Query addMovie failed \n" + e);
-			Notification.show("Faled to add Movie, sorry...");
+			Notification.show("Faled to add Movie, sorry...", Type.ERROR_MESSAGE);
 			if (con != null) {
 				try {
 					System.out.println("The transaction is rolled back \n" + e);
@@ -337,8 +349,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 	};
 
 	@Override
-	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer id) {
-		 //UPDATE FILMS SET COMMENT = ?, RATING = ?, RECOMMEND = ?, WATCHED = ?, WATCHED_DATE = ?, LAST_MODIFIED = GETDATE(), NAME = ? WHERE ID = ?
+	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Integer id) {
 		String sql = sqlMapping.getValue("Movie.editMovie");
 		Connection con = null;
 		int result = 0;
@@ -380,13 +391,23 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			} else {
 				ps.setNull(8, Types.DOUBLE);
 			}
-			ps.setInt(9, id);
+			if (desireLevel != null) {
+				ps.setInt(9, desireLevel);
+			} else {
+				ps.setNull(9, Types.INTEGER);
+			}
+			if (rewatchNeeded != null) {
+				ps.setBoolean(10, rewatchNeeded);
+			} else {
+				ps.setNull(10, Types.BIT);
+			}
+			ps.setInt(11, id);
 
 			result = ps.executeUpdate();
 			con.commit();
 		} catch (SQLException e) {
 			System.out.println("Query editMovie failed \n" + e);
-			Notification.show("Faled to edit Movie, sorry...");
+			Notification.show("Faled to edit Movie, sorry...", Type.ERROR_MESSAGE);
 			if (con != null) {
 				try {
 					System.out.println("The transaction is rolled back \n" + e);
@@ -453,4 +474,48 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 		}
 		System.out.println("Query deleteMovie updated " + result + " rows");
 	}
+	
+	@Override
+	public void incrementWatchCount(Integer id) {
+	String sql = sqlMapping.getValue("Movie.incrementWatchCount");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			
+			ps.setInt(1, id);
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query incrementWatchCount failed \n" + e);
+			Notification.show("Faled to edit Movie, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query incrementWatchCount updated " + result + " rows");
+	};
+	
 }
