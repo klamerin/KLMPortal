@@ -31,7 +31,6 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -125,6 +124,7 @@ public class Movies extends VerticalLayout implements View {
 
 	boolean editFlag = false;
 
+	@SuppressWarnings("unused")
 	private Button JPAButton;
 	private Table JPATable;
 	// EntityManager em =
