@@ -17,6 +17,7 @@ import com.vaadin.event.Action.Handler;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -27,6 +28,7 @@ import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
+import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
@@ -64,7 +66,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	private HorizontalLayout toDoEventsLayout;
 	private Button toDoEventsButton;
 	private Table toDoEventsTable;
-
+	
 	private HorizontalLayout generalEventsLayout;
 	private Button generalEventsButton;
 	private Table generalEventsTable;
@@ -99,6 +101,9 @@ public class GeneralInfo extends VerticalLayout implements View {
 		addComponent(panel);
 		setExpandRatio(navLayout, 1);
 		setExpandRatio(panel, 10);
+		
+		setStyleName("generalInfoBackground");
+		
 	}
 	
 	private void setNavLayout() {
@@ -144,6 +149,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
 				generalInfoDAO.getAllInfos());
 		infoTable = new Table();
+		infoTable.setStyleName("infoTable");
 		infoTable.setContainerDataSource(infosContainer);
 		infoTable.setSelectable(true);
 		infoTable.addActionHandler(new Handler() {
@@ -194,7 +200,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		toDoEventsButton = new Button("TODO", new EventButtonListener(EvenType.TODO.type));
 		eventsButtonLayout.addComponent(toDoEventsButton);
-
+		
 		generalEventsButton = new Button("GENERAL", new EventButtonListener(EvenType.GENERAL.type));
 		eventsButtonLayout.addComponent(generalEventsButton);
 		
@@ -203,8 +209,8 @@ public class GeneralInfo extends VerticalLayout implements View {
 		eventsButtonLayout.setExpandRatio(generalEventsButton, 1);
 		eventLayout.addComponent(eventsButtonLayout);
 	}
-
-	private void setPostEvents() {
+	
+	private void removeAllEventComponents() {
 		if (toDoEventsLayout != null) {
 			eventLayout.removeComponent(toDoEventsLayout);
 		}
@@ -212,6 +218,20 @@ public class GeneralInfo extends VerticalLayout implements View {
 		if (generalEventsLayout != null) {
 			eventLayout.removeComponent(generalEventsLayout);
 		}
+		
+		if (postEventsLayout != null) {
+			eventLayout.removeComponent(postEventsLayout);
+		}
+	}
+
+	private void setPostEvents() {
+//		if (toDoEventsLayout != null) {
+//			eventLayout.removeComponent(toDoEventsLayout);
+//		}
+//
+//		if (generalEventsLayout != null) {
+//			eventLayout.removeComponent(generalEventsLayout);
+//		}
 
 		Button addNewEventButton = new Button("Add Post", new AddEventButtonListener());
 
@@ -237,6 +257,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	            return super.formatPropertyValue(rowId, colId, property);
 	        }
 		};
+		postEventsTable.setStyleName("infoTable");
 		postEventsTable.addGeneratedColumn("Received?", new ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
@@ -286,13 +307,13 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void setTODOEvents() {
-		if (postEventsLayout != null) {
-			eventLayout.removeComponent(postEventsLayout);
-		}
-
-		if (generalEventsLayout != null) {
-			eventLayout.removeComponent(generalEventsLayout);
-		}
+//		if (postEventsLayout != null) {
+//			eventLayout.removeComponent(postEventsLayout);
+//		}
+//
+//		if (generalEventsLayout != null) {
+//			eventLayout.removeComponent(generalEventsLayout);
+//		}
 
 		Button addNewEventButton = new Button("Add TODO", new AddEventButtonListener());
 
@@ -321,6 +342,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	            return super.formatPropertyValue(rowId, colId, property);
 	        }
 		};
+		toDoEventsTable.setStyleName("infoTable");
 		toDoEventsTable.addGeneratedColumn("Done?", new ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
@@ -370,13 +392,13 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void setGeneralEvents() {
-		if (postEventsLayout != null) {
-			eventLayout.removeComponent(postEventsLayout);
-		}
-
-		if (toDoEventsLayout != null) {
-			eventLayout.removeComponent(toDoEventsLayout);
-		}
+//		if (postEventsLayout != null) {
+//			eventLayout.removeComponent(postEventsLayout);
+//		}
+//
+//		if (toDoEventsLayout != null) {
+//			eventLayout.removeComponent(toDoEventsLayout);
+//		}
 
 		Button addNewEventButton = new Button("Add General", new AddEventButtonListener());
 
@@ -402,6 +424,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	            return super.formatPropertyValue(rowId, colId, property);
 	        }
 		};
+		generalEventsTable.setStyleName("infoTable");
 		setGeneralEventTable();
 		generalEventsTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
@@ -784,6 +807,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
+			removeAllEventComponents();
 			eventType = tempEventType;
 			if (eventType.equals(EvenType.POST.type)) {
 				setPostEvents();

@@ -21,6 +21,7 @@ public class StartView extends HorizontalLayout implements View {
 	public StartView() {
 
 		setSizeFull();
+		addStyleName("startViewBackground");
 		Button filmsButton = new Button("Go to Films View", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -41,6 +42,7 @@ public class StartView extends HorizontalLayout implements View {
 				nav.navigateTo(GEN_INFO);
 			}
 		});
+		genInfobutton.setStyleName("transparentButton");
 		addComponent(genInfobutton);
 		setComponentAlignment(genInfobutton, Alignment.MIDDLE_LEFT);
 		setSpacing(true);

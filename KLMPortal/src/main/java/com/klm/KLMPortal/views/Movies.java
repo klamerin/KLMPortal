@@ -7,8 +7,10 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 
+import org.tepi.filtertable.FilterTable;
 import org.vaadin.dialogs.ConfirmDialog;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.klm.KLMPortal.beans.MovieBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IMovieDAO;
@@ -23,6 +25,7 @@ import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
@@ -31,6 +34,7 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
@@ -67,7 +71,7 @@ public class Movies extends VerticalLayout implements View {
 	private HorizontalLayout moviesLayout = new HorizontalLayout();
 	private static final String GEN_INFO = "generalInfo";
 
-	private Table moviesTable;
+	private FilterTable moviesTable;
 	private MovieItemClickListener movieItemClickListener = new MovieItemClickListener();
 	private VerticalLayout buttonsLayout;
 	private VerticalLayout tableLayout;
@@ -112,6 +116,7 @@ public class Movies extends VerticalLayout implements View {
 	private Button editButton;
 	private Button submitButton;
 	private Button deleteButton;
+	private Button filterButton;
 	private ComboBox searchMovieComboBox;
 
 	/*
@@ -122,7 +127,8 @@ public class Movies extends VerticalLayout implements View {
 	 * —————————————————————————————————————————————————/
 	 */
 
-	boolean editFlag = false;
+	private boolean editFlag = false;
+	private boolean filteringAllowed = false;
 
 	@SuppressWarnings("unused")
 	private Button JPAButton;
@@ -222,7 +228,12 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setMainLayout() {
 
+//		setIcon(new ThemeResource("icons/movies-main.jpg"));
+		setStyleName("moviesMainBackground");
+		System.out.println("getWidth: " + getWidth());
+		System.out.println("getheight: " + getHeight());
 		setNavLayout();
+		
 
 		setButtonsLayout();
 
@@ -231,6 +242,7 @@ public class Movies extends VerticalLayout implements View {
 		addComponent(moviesLayout);
 		setExpandRatio(navLayout, 2);
 		setExpandRatio(moviesLayout, 10);
+		initTable();
 	}
 
 	private void setButtonsLayout() {
@@ -268,11 +280,33 @@ public class Movies extends VerticalLayout implements View {
 	private void setTableLayout() {
 		tableLayout = new VerticalLayout();
 		tableLayout.setSpacing(true);
-		moviesTable = new Table("Movies");
+		moviesTable = new FilterTable("Movies");
+		moviesTable.setStyleName("moviesTable");
 		moviesTable.setSelectable(true);
 		moviesTable.setNullSelectionAllowed(false);
 		moviesTable.addItemClickListener(movieItemClickListener);
+		filterButton = new Button("Filter", new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				if (filteringAllowed) {
+					moviesTable.clearFilters();
+					moviesTable.setFilterBarVisible(false);
+					filteringAllowed = false;
+				} else {
+					moviesTable.setFilterBarVisible(true);
+					filteringAllowed = true;
+				}
+
+			}
+		});
+		tableLayout.addComponent(filterButton);
 		tableLayout.addComponent(moviesTable);
+		tableLayout.setComponentAlignment(filterButton, Alignment.BOTTOM_RIGHT);
+		tableLayout.setExpandRatio(filterButton, 1);
+		tableLayout.setExpandRatio(moviesTable, 20);
 		moviesLayout.addComponent(tableLayout);
 		moviesLayout.setExpandRatio(tableLayout, 5.0f);
 	}
@@ -345,7 +379,7 @@ public class Movies extends VerticalLayout implements View {
 			}
 		}));
 
-//		Button wikiButton = new Button("Wiki", new WikiAPIListener());
+		// Button wikiButton = new Button("Wiki", new WikiAPIListener());
 		// buttonsLayout.addComponent(wikiButton);
 		// buttonsLayout.setComponentAlignment(wikiButton,
 		// Alignment.BOTTOM_RIGHT);
@@ -502,6 +536,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setMovieCommentField(boolean newMovie, MovieBean movie) {
 		movieCommentField = new TextField("Comment");
+		movieCommentField.setWidth("70%");
 		if (newMovie) {
 			movieCommentField.setInputPrompt("care to comment?");
 		} else {
@@ -560,6 +595,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setMoviePopupWindow(MovieBean movie) {
 		movieWindow = new Window();
+		movieWindow.setStyleName("moviesWindowBackground");
 		if (movie != null) {
 			movieWindow.setCaption(movie.getName());
 		} else {
@@ -570,7 +606,7 @@ public class Movies extends VerticalLayout implements View {
 		movieWindowLayout = new FormLayout();
 		movieWindowLayout.setSpacing(true);
 		movieWindowLayout.setMargin(true);
-//		movieWindow.setModal(true);
+		// movieWindow.setModal(true);
 	}
 
 	private void setAllMoviesTable() {
@@ -905,11 +941,11 @@ public class Movies extends VerticalLayout implements View {
 		private static final long serialVersionUID = 1L;
 
 		String movieName;
-		
+
 		public WikiAPIListener(String movieName) {
 			this.movieName = movieName;
 		}
-		
+
 		@Override
 		public void buttonClick(ClickEvent event) {
 			getWiki(movieName);
@@ -933,7 +969,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private void getWiki(String movieName) {
 
-		String[] listOfMovieStrings = { movieName + "(film)"};
+		String[] listOfMovieStrings = { movieName + "(film)" };
 		User movieUser = new User("", "", "http://en.wikipedia.org/w/api.php");
 		movieUser.login();
 		List<Page> listOfMoviePages = movieUser.queryContent(listOfMovieStrings);

@@ -14,5 +14,55 @@
   font-weight: bold;
 }
 
+.v-verticallayout-moviesMainBackground {
+    background: url(icons/Movies2.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 
+.v-window-moviesWindowBackground {
+    background: url(icons/Movies.png) no-repeat;
+}
+
+.v-horizontallayout-startViewBackground {
+    background: url(icons/Movies8.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.v-verticallayout-generalInfoBackground {
+ background: url(icons/genInfo.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.v-table-moviesTable {
+	opacity: 0.9;
+    font-weight: bolder;
+}
+
+.v-table-infoTable {
+	opacity: 0.9;
+    font-weight: bolder;
+}
+
+.v-button {
+	opacity: 0.9;
+    font-weight: bolder;
+}
+
+.v-textfield {
+	opacity: 0.9;
+    font-weight: bolder;
+}
+
+.v-filterselect {
+	opacity: 0.9;
+    font-weight: bolder;
 }
