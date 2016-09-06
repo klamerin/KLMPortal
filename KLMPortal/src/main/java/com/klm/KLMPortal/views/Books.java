@@ -1,5 +1,6 @@
 package com.klm.KLMPortal.views;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,8 +49,10 @@ public class Books extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 1L;
 
-	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
-	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
+//	private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
+//	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
+	private DAOFactory mysqlDAOFactory = DAOFactory.getMYSQLFactory();
+	private IMovieDAO portalDAO = mysqlDAOFactory.getPortalDAO();
 
 	/*
 	 * —————————————————————————————————————————————————\
@@ -1000,7 +1003,12 @@ public class Books extends VerticalLayout implements View {
 		List<Page> listOfMoviePages = movieUser.queryContent(listOfMovieStrings);
 		for (Page page : listOfMoviePages) {
 			WikiModel wikiMovieModel = new WikiModel("${image}", "${title}");
-			String movieHtml = wikiMovieModel.render(page.toString());
+			try {
+				String movieHtml = wikiMovieModel.render(page.toString());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			System.out.println("movieeees page image: " + page.getImageUrl());
 			System.out.println("movieeees page title: " + page.getTitle());
 			System.out.println("movies getCurrentContent: " + page.getCurrentContent());

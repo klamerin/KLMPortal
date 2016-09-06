@@ -1,5 +1,6 @@
 package com.klm.KLMPortal.views;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,7 @@ import org.vaadin.dialogs.ConfirmDialog;
 import com.google.gwt.user.client.ui.Widget;
 import com.klm.KLMPortal.beans.MovieBean;
 import com.klm.KLMPortal.data.DAOFactory;
+import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
 import com.klm.KLMPortal.data.DAO.IMovieDAO;
 import com.klm.KLMPortal.entities.Film;
 import com.vaadin.addon.jpacontainer.JPAContainer;
@@ -55,8 +57,11 @@ public class Movies extends VerticalLayout implements View {
 
 	private static final long serialVersionUID = 1L;
 
-	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
-	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
+//	private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
+//	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
+	
+	private DAOFactory mysqlDAOFactory = DAOFactory.getMYSQLFactory();
+	private IMovieDAO portalDAO = mysqlDAOFactory.getPortalDAO();
 
 	/*
 	 * —————————————————————————————————————————————————\
@@ -948,7 +953,12 @@ public class Movies extends VerticalLayout implements View {
 
 		@Override
 		public void buttonClick(ClickEvent event) {
-			getWiki(movieName);
+			try {
+				getWiki(movieName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 		}
 
@@ -967,12 +977,16 @@ public class Movies extends VerticalLayout implements View {
 
 	}
 
-	private void getWiki(String movieName) {
+	private void getWiki(String movieName) throws IOException {
 
-		String[] listOfMovieStrings = { movieName + "(film)" };
+		String[] listOfMovieStrings = { movieName + " (film)" };
+		for (String string : listOfMovieStrings) {
+			System.out.println("listOfMovieString: " + string);
+		}
 		User movieUser = new User("", "", "http://en.wikipedia.org/w/api.php");
-		movieUser.login();
+		System.out.println(movieUser.login() == true ? " login succes" : "login faled");
 		List<Page> listOfMoviePages = movieUser.queryContent(listOfMovieStrings);
+		System.out.println(listOfMoviePages.size() > 0 ? "listOfMoviePages size is: " + listOfMoviePages.size() : "listOfMoviePages is NULLL");
 		for (Page page : listOfMoviePages) {
 			WikiModel wikiMovieModel = new WikiModel("${image}", "${title}");
 			String movieHtml = wikiMovieModel.render(page.toString());

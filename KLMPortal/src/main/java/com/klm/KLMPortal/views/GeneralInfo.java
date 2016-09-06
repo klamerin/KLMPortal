@@ -7,6 +7,7 @@ import com.klm.KLMPortal.beans.EventBean;
 import com.klm.KLMPortal.beans.InfoBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
+import com.klm.KLMPortal.data.DAO.IMovieDAO;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
@@ -45,8 +46,10 @@ public class GeneralInfo extends VerticalLayout implements View {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private DAOFactory mssqlDAOFactory = DAOFactory.getFactory();
-	private IGeneralInfoDAO generalInfoDAO = mssqlDAOFactory.getGeneralInfoDAO();
+//	private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
+//	private IGeneralInfoDAO generalInfoDAO = mssqlDAOFactory.getGeneralInfoDAO();
+	private DAOFactory mysqlDAOFactory = DAOFactory.getMYSQLFactory();
+	private IGeneralInfoDAO generalInfoDAO = mysqlDAOFactory.getGeneralInfoDAO();
 
 	private Navigator nav = UI.getCurrent().getNavigator();
 	private HorizontalLayout navLayout = new HorizontalLayout();

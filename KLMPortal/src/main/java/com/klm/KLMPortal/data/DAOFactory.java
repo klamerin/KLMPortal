@@ -14,9 +14,13 @@ public abstract class DAOFactory {
 
 	protected abstract void initDataSourceProperties();
 
-	public static DAOFactory getFactory() {
+	public static DAOFactory getMSSQLFactory() {
 			return new MSSQLDAOFactory();
 	}
+	
+	public static DAOFactory getMYSQLFactory() {
+		return new MYSQLDAOFactory();
+}
 
 	public abstract IMovieDAO getPortalDAO();
 	
