@@ -6,6 +6,7 @@ import javax.servlet.annotation.WebServlet;
 
 import com.klm.KLMPortal.views.GeneralInfo;
 import com.klm.KLMPortal.views.Movies;
+import com.klm.KLMPortal.views.Music;
 import com.klm.KLMPortal.views.StartView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
@@ -30,6 +31,7 @@ public class MyUI extends UI {
 
 	private Navigator nav;
 	protected static final String FILMSVIEW = "films";
+	protected static final String MUSICSVIEW = "music";
 	private static final String GEN_INFO = "generalInfo";
 
 	@PersistenceContext(name = "persistence/em", unitName = "KLMPortal")
@@ -65,14 +67,12 @@ public class MyUI extends UI {
 			System.out.println("entityManager is not null at UI");
 		}
 		nav.addView(FILMSVIEW, new Movies(entityManager));
+		nav.addView(MUSICSVIEW, new Music());
 		nav.addView(GEN_INFO, new GeneralInfo());
 
 	}
-
-	private void buildMainLayout() {
-
-	}
-
+	
+	
 	@WebServlet(urlPatterns = "/*", name = "MyUIServlet", asyncSupported = true)
 	@VaadinServletConfiguration(ui = MyUI.class, productionMode = false)
 	public static class MyUIServlet extends VaadinServlet {

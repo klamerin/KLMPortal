@@ -1,4 +1,4 @@
-package com.klm.KLMPortal.data.DAO;
+package com.klm.KLMPortal.data.DAOImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ import com.klm.KLMPortal.beans.EventBean;
 import com.klm.KLMPortal.beans.InfoBean;
 import com.klm.KLMPortal.data.AbstractDAO;
 import com.klm.KLMPortal.data.MSSQLDAOFactory;
+import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 
@@ -261,6 +262,53 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 		}
 		return events;
 	}
+	
+	
+	@Override
+	public ArrayList<EventBean> getPostEventsNotReceived() {
+		ArrayList<EventBean> events = new ArrayList<EventBean>();
+		String sql = sqlMapping.getValue("GeneralInfo.getPostEventsNotReceived");
+		Connection con = null;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getDate("EVENT_SET_DATE"), rslt.getDate("EVENT_ETA_DATE"), rslt.getString("COMMENT"));
+				events.add(event);
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getPostEventsNotReceived failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		return events;
+	}
+	
 	
 	@Override
 	public ArrayList<EventBean> getAllEventsByType(String eventType) {

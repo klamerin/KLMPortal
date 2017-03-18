@@ -1,13 +1,14 @@
 package com.klm.KLMPortal.data;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.klm.KLMPortal.data.DAO.GeneralInfoDAOImpl;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
 import com.klm.KLMPortal.data.DAO.IMovieDAO;
-import com.klm.KLMPortal.data.DAO.MovieDAOImpl;
+import com.klm.KLMPortal.data.DAO.IMusicDAO;
+import com.klm.KLMPortal.data.DAOImpl.GeneralInfoDAOImpl;
+import com.klm.KLMPortal.data.DAOImpl.MovieDAOImpl;
+import com.klm.KLMPortal.data.DAOImpl.MusicDAOImpl;
 
 import net.sourceforge.jtds.jdbcx.JtdsDataSource;
 
@@ -57,7 +58,7 @@ public class MSSQLDAOFactory extends DAOFactory
 
 
     @Override
-    public IMovieDAO getPortalDAO()
+    public IMovieDAO getMovieDAO()
     {
         return new MovieDAOImpl();
     }
@@ -66,6 +67,12 @@ public class MSSQLDAOFactory extends DAOFactory
 	@Override
 	public IGeneralInfoDAO getGeneralInfoDAO() {
 		return new GeneralInfoDAOImpl();
+	}
+
+
+	@Override
+	public IMusicDAO getMusicDAO() {
+		return new MusicDAOImpl();
 	}
 }
 

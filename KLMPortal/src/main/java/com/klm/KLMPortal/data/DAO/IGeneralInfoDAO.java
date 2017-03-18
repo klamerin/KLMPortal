@@ -31,4 +31,6 @@ public interface IGeneralInfoDAO {
 	public void setEventComment(Integer eventId, String comment);
 	
 	public void setEventData(Integer eventId, String eventName, Date eventSetDate, Date eventETADate, String comment, String eventType);
+	
+	public ArrayList<EventBean> getPostEventsNotReceived();
 }

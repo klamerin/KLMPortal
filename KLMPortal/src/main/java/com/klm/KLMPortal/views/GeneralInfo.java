@@ -7,29 +7,22 @@ import com.klm.KLMPortal.beans.EventBean;
 import com.klm.KLMPortal.beans.InfoBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
-import com.klm.KLMPortal.data.DAO.IMovieDAO;
-import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import com.vaadin.data.Property.ValueChangeEvent;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.event.Action;
 import com.vaadin.event.Action.Handler;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.Resource;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Table;
@@ -54,6 +47,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	private Navigator nav = UI.getCurrent().getNavigator();
 	private HorizontalLayout navLayout = new HorizontalLayout();
 	private static final String FILMSVIEW = "films";
+	protected static final String MUSICSVIEW = "music";
 	
 	
 	private HorizontalLayout infoLayout = new HorizontalLayout();
@@ -123,7 +117,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		});
 		navLayout.addComponent(startViewButton);
 		navLayout.setComponentAlignment(startViewButton, Alignment.TOP_CENTER);
-		Button genInfoButton = new Button("Films", new Button.ClickListener() {
+		Button filmsButton = new Button("Films", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -132,8 +126,20 @@ public class GeneralInfo extends VerticalLayout implements View {
 				nav.navigateTo(FILMSVIEW);
 			}
 		});
-		navLayout.addComponent(genInfoButton);
-		navLayout.setComponentAlignment(genInfoButton, Alignment.TOP_CENTER);
+		navLayout.addComponent(filmsButton);
+		navLayout.setComponentAlignment(filmsButton, Alignment.TOP_CENTER);
+		
+		Button musicButton = new Button("Music", new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo(MUSICSVIEW);
+			}
+		});
+		navLayout.addComponent(musicButton);
+		navLayout.setComponentAlignment(musicButton, Alignment.TOP_CENTER);
 		addComponent(navLayout);
 		setComponentAlignment(navLayout, Alignment.TOP_CENTER);
 	}
@@ -731,7 +737,8 @@ public class GeneralInfo extends VerticalLayout implements View {
 	
 	private void setPostEventTable(){
 		BeanItemContainer<EventBean> postEventsContainer = new BeanItemContainer<>(EventBean.class,
-				generalInfoDAO.getAllEventsByType(EvenType.POST.type));
+//				generalInfoDAO.getAllEventsByType(EvenType.POST.type));
+				generalInfoDAO.getPostEventsNotReceived());
 		postEventsTable.setContainerDataSource(postEventsContainer);
 		postEventsTable.setVisibleColumns("eventName", "eventSetDate", "Received?");
 		postEventsTable.setColumnHeaders("Event", "Order Date", "Received?");

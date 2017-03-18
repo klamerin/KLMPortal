@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
 import com.klm.KLMPortal.data.DAO.IMovieDAO;
+import com.klm.KLMPortal.data.DAO.IMusicDAO;
 
 public abstract class DAOFactory {
 
@@ -22,8 +23,10 @@ public abstract class DAOFactory {
 		return new MYSQLDAOFactory();
 }
 
-	public abstract IMovieDAO getPortalDAO();
+	public abstract IMovieDAO getMovieDAO();
 	
 	public abstract IGeneralInfoDAO getGeneralInfoDAO();
+	
+	public abstract IMusicDAO getMusicDAO();
 
 }

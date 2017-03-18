@@ -163,6 +163,11 @@
 		   <artifactId>filteringtable</artifactId>
 		   <version>0.9.15.v7</version>
 		</dependency>
+		<dependency>
+		   <groupId>org.vaadin.addons</groupId>
+		   <artifactId>expandingtextarea</artifactId>
+		   <version>1.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

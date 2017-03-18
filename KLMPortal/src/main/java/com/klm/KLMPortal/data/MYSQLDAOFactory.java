@@ -3,10 +3,12 @@ package com.klm.KLMPortal.data;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.klm.KLMPortal.data.DAO.GeneralInfoDAOImpl;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
 import com.klm.KLMPortal.data.DAO.IMovieDAO;
-import com.klm.KLMPortal.data.DAO.MovieDAOImpl;
+import com.klm.KLMPortal.data.DAO.IMusicDAO;
+import com.klm.KLMPortal.data.DAOImpl.GeneralInfoDAOImpl;
+import com.klm.KLMPortal.data.DAOImpl.MovieDAOImpl;
+import com.klm.KLMPortal.data.DAOImpl.MusicDAOImpl;
 import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
 
 public class MYSQLDAOFactory extends DAOFactory {
@@ -61,7 +63,7 @@ public class MYSQLDAOFactory extends DAOFactory {
 
 
     @Override
-    public IMovieDAO getPortalDAO()
+    public IMovieDAO getMovieDAO()
     {
         return new MovieDAOImpl();
     }
@@ -70,5 +72,11 @@ public class MYSQLDAOFactory extends DAOFactory {
 	@Override
 	public IGeneralInfoDAO getGeneralInfoDAO() {
 		return new GeneralInfoDAOImpl();
+	}
+
+
+	@Override
+	public IMusicDAO getMusicDAO() {
+		return new MusicDAOImpl();
 	}
 }

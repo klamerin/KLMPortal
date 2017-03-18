@@ -1,7 +1,6 @@
 package com.klm.KLMPortal.views;
 
 import java.io.IOException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,7 +51,7 @@ public class Books extends VerticalLayout implements View {
 //	private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
 //	private IMovieDAO portalDAO = mssqlDAOFactory.getPortalDAO();
 	private DAOFactory mysqlDAOFactory = DAOFactory.getMYSQLFactory();
-	private IMovieDAO portalDAO = mysqlDAOFactory.getPortalDAO();
+	private IMovieDAO portalDAO = mysqlDAOFactory.getMovieDAO();
 
 	/*
 	 * —————————————————————————————————————————————————\
@@ -776,8 +775,9 @@ public class Books extends VerticalLayout implements View {
 	private class SubmitMovieButtonListener implements ClickListener {
 		private static final long serialVersionUID = 1L;
 
-		Integer id;
-
+		@SuppressWarnings("unused")
+		private Integer id;
+		
 		private SubmitMovieButtonListener(Integer id) {
 			this.id = id;
 		}
@@ -813,43 +813,43 @@ public class Books extends VerticalLayout implements View {
 		}
 
 		private void addToWatchMovie() {
-			portalDAO.addNewMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(), null, null,
-					movieWatchedBecauseTextField.getValue(), null, movieDesireLevelComboBox.getValue() != null
-							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
-					null);
+//			portalDAO.addNewMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(), null, null,
+//					movieWatchedBecauseTextField.getValue(), null, movieDesireLevelComboBox.getValue() != null
+//							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
+//					null);
 		}
 
 		private void editToWatchMovie() {
-			portalDAO.editMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(), null, null,
-					movieWatchedBecauseTextField.getValue(), null, movieDesireLevelComboBox.getValue() != null
-							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
-					null, id);
+//			portalDAO.editMovie(movieNameTextField.getValue(), false, null, movieCommentField.getValue(), null, null,
+//					movieWatchedBecauseTextField.getValue(), null, movieDesireLevelComboBox.getValue() != null
+//							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
+//					null, id);
 		}
 
 		private void addNewWatchedMovie() {
-			portalDAO.addNewMovie(movieNameTextField.getValue(), true,
-					Double.valueOf(movieRatingComboBox.getValue().toString()),
-					movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
-					movieDateField.getValue() != null ? new Date(movieDateField.getValue().getTime()) : null,
-					movieRecommendedCheckBox.getValue(), movieWatchedBecauseTextField.getValue(),
-					movieSadnessLevelComboBox.getValue() != null
-							? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null,
-					movieDesireLevelComboBox.getValue() != null
-							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
-					movieRewatchNeededCheckBox.getValue());
+//			portalDAO.addNewMovie(movieNameTextField.getValue(), true,
+//					Double.valueOf(movieRatingComboBox.getValue().toString()),
+//					movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
+//					movieDateField.getValue() != null ? new Date(movieDateField.getValue().getTime()) : null,
+//					movieRecommendedCheckBox.getValue(), movieWatchedBecauseTextField.getValue(),
+//					movieSadnessLevelComboBox.getValue() != null
+//							? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null,
+//					movieDesireLevelComboBox.getValue() != null
+//							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
+//					movieRewatchNeededCheckBox.getValue());
 		}
 
 		private void editWatchedMovie() {
-			portalDAO.editMovie(movieNameTextField.getValue(), true,
-					Double.valueOf(movieRatingComboBox.getValue().toString()),
-					movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
-					movieDateField.getValue() != null ? new Date(movieDateField.getValue().getTime()) : null,
-					movieRecommendedCheckBox.getValue(), movieWatchedBecauseTextField.getValue(),
-					movieSadnessLevelComboBox.getValue() != null
-							? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null,
-					movieDesireLevelComboBox.getValue() != null
-							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
-					movieRewatchNeededCheckBox.getValue(), id);
+//			portalDAO.editMovie(movieNameTextField.getValue(), true,
+//					Double.valueOf(movieRatingComboBox.getValue().toString()),
+//					movieCommentField.getValue() != null ? movieCommentField.getValue() : null,
+//					movieDateField.getValue() != null ? new Date(movieDateField.getValue().getTime()) : null,
+//					movieRecommendedCheckBox.getValue(), movieWatchedBecauseTextField.getValue(),
+//					movieSadnessLevelComboBox.getValue() != null
+//							? Double.valueOf(movieSadnessLevelComboBox.getValue().toString()) : null,
+//					movieDesireLevelComboBox.getValue() != null
+//							? Integer.valueOf(movieDesireLevelComboBox.getValue().toString()) : null,
+//					movieRewatchNeededCheckBox.getValue(), id);
 		}
 	}
 
@@ -1005,6 +1005,7 @@ public class Books extends VerticalLayout implements View {
 			WikiModel wikiMovieModel = new WikiModel("${image}", "${title}");
 			try {
 				String movieHtml = wikiMovieModel.render(page.toString());
+				System.out.println(movieHtml);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

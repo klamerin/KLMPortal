@@ -22,6 +22,18 @@
   background-size: cover;
 }
 
+.v-verticallayout-musicMainBackground {
+    background: url(icons/vinyl.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.v-window-musicWindowBackground {
+    background: url(icons/vinyl_small.png) no-repeat;
+}
+
 .v-window-moviesWindowBackground {
     background: url(icons/Movies.png) no-repeat;
 }
