@@ -9,6 +9,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 
 import org.tepi.filtertable.FilterTable;
+//import org.tepi.filtertable.FilterTable;
 import org.vaadin.dialogs.ConfirmDialog;
 import org.vaadin.hene.expandingtextarea.ExpandingTextArea;
 
@@ -113,6 +114,7 @@ public class Movies extends VerticalLayout implements View {
 	private ComboBox movieDesireLevelComboBox;
 	private CheckBox movieRewatchNeededCheckBox;
 	private Button watchCountButton;
+	private TextField watchCountTextField;
 	private HorizontalLayout rewatchLayout;
 	private HorizontalLayout movieWindowButtonsLayout;
 	private Button editButton;
@@ -302,8 +304,8 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setTableLayout() {
 		tableLayout = new VerticalLayout();
-		tableLayout.setSpacing(true);
-		moviesTable = new FilterTable("Movies");
+//		tableLayout.setSpacing(true);
+		moviesTable = new FilterTable();
 		moviesTable.setStyleName("moviesTable");
 		moviesTable.setSelectable(true);
 		moviesTable.setNullSelectionAllowed(false);
@@ -327,7 +329,7 @@ public class Movies extends VerticalLayout implements View {
 		});
 		tableLayout.addComponent(filterButton);
 		tableLayout.addComponent(moviesTable);
-		tableLayout.setComponentAlignment(filterButton, Alignment.BOTTOM_RIGHT);
+		tableLayout.setComponentAlignment(filterButton, Alignment.BOTTOM_LEFT);
 		tableLayout.setExpandRatio(filterButton, 1);
 		tableLayout.setExpandRatio(moviesTable, 20);
 		moviesLayout.addComponent(tableLayout);
@@ -628,6 +630,16 @@ public class Movies extends VerticalLayout implements View {
 			movieRewatchNeededCheckBox.setValue(movie.isRewatchNeeded());
 			movieRewatchNeededCheckBox.setReadOnly(true);
 		}
+		
+		watchCountTextField = new TextField();
+		watchCountTextField.setWidth("30px");
+		if (newMovie || !watched) {
+			watchCountTextField.setVisible(false);
+		} else if (watched) {
+			watchCountTextField.setValue(movie.getWatchCount() + "");
+			watchCountTextField.setReadOnly(true);
+		}
+		System.out.println("Watch Count: " + movie.getWatchCount());
 
 		watchCountButton = new Button("RE!", new ClickListener() {
 
@@ -637,6 +649,11 @@ public class Movies extends VerticalLayout implements View {
 			public void buttonClick(ClickEvent event) {
 				if (movie != null) {
 					movieDAO.incrementWatchCount(movie.getId());
+					movie.incrementWatchCount();
+					watchCountTextField.setReadOnly(false);
+					watchCountTextField.setValue(movie.getWatchCount() + "");
+					watchCountTextField.setReadOnly(true);
+					System.out.println("Re-Watch Count: " + movie.getWatchCount());
 					initTable();
 				}
 
@@ -645,10 +662,12 @@ public class Movies extends VerticalLayout implements View {
 		if (newMovie || !watched) {
 			watchCountButton.setVisible(false);
 		}
-
+		
+		rewatchLayout.addComponent(watchCountTextField);
 		rewatchLayout.addComponent(movieRewatchNeededCheckBox);
 		rewatchLayout.addComponent(watchCountButton);
 		rewatchLayout.setComponentAlignment(movieRewatchNeededCheckBox, Alignment.MIDDLE_LEFT);
+		rewatchLayout.setComponentAlignment(watchCountTextField, Alignment.MIDDLE_LEFT);
 		rewatchLayout.setComponentAlignment(watchCountButton, Alignment.MIDDLE_RIGHT);
 		movieWindowLayout.addComponent(rewatchLayout);
 	}
@@ -675,7 +694,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(allMovieNames);
 			container.sort(new Object[] { "rating", "sadnessLevel" }, new boolean[] { false, false });
-			moviesTable.setCaption("Movies (All)");
+//			moviesTable.setCaption("Movies (All)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable.setVisibleColumns(new Object[] { "name", "rating", "sadnessLevel", "recommend", "watched",
 					"comment", "watchedBecause", "desireLevel", "rewatchNeeded", "watchCount", "social" });
@@ -696,7 +715,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(watchedMovies);
 			container.sort(new Object[] { "rating", "sadnessLevel" }, new boolean[] { false, false });
-			moviesTable.setCaption("Movies (Watched)");
+//			moviesTable.setCaption("Movies (Watched)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable.setVisibleColumns(new Object[] { "name", "rating", "sadnessLevel", "recommend", "comment",
 					"watchedBecause", "rewatchNeeded", "watchCount" });
@@ -719,7 +738,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(toWatchMovies);
 			container.sort(new Object[] { "desireLevel" }, new boolean[] { false });
-			moviesTable.setCaption("Movies (To watch)");
+//			moviesTable.setCaption("Movies (To watch)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable
 					.setVisibleColumns(new Object[] { "name", "comment", "watchedBecause", "desireLevel", "social" });
@@ -741,7 +760,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(toWatchMovies);
 			container.sort(new Object[] { "desireLevel" }, new boolean[] { false });
-			moviesTable.setCaption("Movies (To watch alone)");
+//			moviesTable.setCaption("Movies (To watch alone)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable.setVisibleColumns(new Object[] { "name", "comment", "watchedBecause", "desireLevel" });
 			moviesTable.setColumnHeaders(new String[] { "Name", "Comment", "Watch Because", "Desire Level" });
@@ -761,7 +780,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(toWatchMovies);
 			container.sort(new Object[] { "desireLevel" }, new boolean[] { false });
-			moviesTable.setCaption("Movies (To watch with Tina)");
+//			moviesTable.setCaption("Movies (To watch with Tina)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable.setVisibleColumns(new Object[] { "name", "comment", "watchedBecause", "desireLevel" });
 			moviesTable.setColumnHeaders(new String[] { "Name", "Comment", "Watch Because", "Desire Level" });
@@ -780,7 +799,7 @@ public class Movies extends VerticalLayout implements View {
 			BeanItemContainer<MovieBean> container = new BeanItemContainer<MovieBean>(MovieBean.class);
 			container.addAll(recommendedMovies);
 			container.sort(new Object[] { "rating", "sadnessLevel" }, new boolean[] { false, false });
-			moviesTable.setCaption("Movies (Recommended)");
+//			moviesTable.setCaption("Movies (Recommended)");
 			moviesTable.setContainerDataSource(container);
 			moviesTable.setVisibleColumns(new Object[] { "name", "rating", "sadnessLevel", "comment", "watchedBecause",
 					"rewatchNeeded", "watchCount" });

@@ -9,8 +9,8 @@
 	<name>KLMPortal</name>
 
 	<properties>
-		<!-- <vaadin.version>7.5.8</vaadin.version> -->
 		<vaadin.version>7.6.1</vaadin.version>
+		<!--<vaadin.version>8.0.3</vaadin.version>-->
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<jetty.plugin.version>9.2.3.v20140905</jetty.plugin.version>
 		<project.source.version>1.7</project.source.version>
@@ -162,11 +162,21 @@
 		   <groupId>org.vaadin.addons</groupId>
 		   <artifactId>filteringtable</artifactId>
 		   <version>0.9.15.v7</version>
-		</dependency>
+		</dependency> 
+		<!-- <dependency>
+		   <groupId>org.tepi.filtertable</groupId>
+		   <artifactId>filteringtable</artifactId>
+		   <version>1.0.1.v8</version>
+		</dependency>-->
 		<dependency>
 		   <groupId>org.vaadin.addons</groupId>
 		   <artifactId>expandingtextarea</artifactId>
 		   <version>1.2.0</version>
+		</dependency>
+		<dependency>
+		   <groupId>eu.maxschuster</groupId>
+		   <artifactId>vaadin-autocompletetextfield</artifactId>
+		   <version>1.0-alpha-4</version>
 		</dependency>
 	</dependencies>
 

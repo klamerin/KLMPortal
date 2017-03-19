@@ -15,6 +15,7 @@ public class StartView extends HorizontalLayout implements View {
 
 	private static final String FILMSVIEW = "films";
 	private static final String GEN_INFO = "generalInfo";
+	private static final String MUSICSVIEW = "music";
 	
 	private Navigator nav = UI.getCurrent().getNavigator();
 
@@ -32,7 +33,7 @@ public class StartView extends HorizontalLayout implements View {
 			}
 		});
 		addComponent(filmsButton);
-		setComponentAlignment(filmsButton, Alignment.MIDDLE_RIGHT);
+		setComponentAlignment(filmsButton, Alignment.MIDDLE_CENTER);
 		Button genInfobutton = new Button("Go to General Info View", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -44,7 +45,20 @@ public class StartView extends HorizontalLayout implements View {
 		});
 		genInfobutton.setStyleName("transparentButton");
 		addComponent(genInfobutton);
-		setComponentAlignment(genInfobutton, Alignment.MIDDLE_LEFT);
+		setComponentAlignment(genInfobutton, Alignment.MIDDLE_CENTER);
+		
+		Button musicButton = new Button("Music", new Button.ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				nav.navigateTo(MUSICSVIEW);
+			}
+		});
+		addComponent(musicButton);
+		setComponentAlignment(musicButton, Alignment.MIDDLE_CENTER);
+		
 		setSpacing(true);
 		setMargin(true);
 	}

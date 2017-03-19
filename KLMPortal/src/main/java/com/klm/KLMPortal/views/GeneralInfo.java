@@ -1,6 +1,7 @@
 package com.klm.KLMPortal.views;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import com.klm.KLMPortal.beans.EventBean;
@@ -39,8 +40,9 @@ public class GeneralInfo extends VerticalLayout implements View {
 	 */
 	private static final long serialVersionUID = 1L;
 
-//	private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
-//	private IGeneralInfoDAO generalInfoDAO = mssqlDAOFactory.getGeneralInfoDAO();
+	// private DAOFactory mssqlDAOFactory = DAOFactory.getMSSQLFactory();
+	// private IGeneralInfoDAO generalInfoDAO =
+	// mssqlDAOFactory.getGeneralInfoDAO();
 	private DAOFactory mysqlDAOFactory = DAOFactory.getMYSQLFactory();
 	private IGeneralInfoDAO generalInfoDAO = mysqlDAOFactory.getGeneralInfoDAO();
 
@@ -48,8 +50,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 	private HorizontalLayout navLayout = new HorizontalLayout();
 	private static final String FILMSVIEW = "films";
 	protected static final String MUSICSVIEW = "music";
-	
-	
+
 	private HorizontalLayout infoLayout = new HorizontalLayout();
 	private VerticalLayout eventLayout = new VerticalLayout();
 	private HorizontalSplitPanel panel = new HorizontalSplitPanel(infoLayout, eventLayout);
@@ -63,15 +64,20 @@ public class GeneralInfo extends VerticalLayout implements View {
 	private HorizontalLayout toDoEventsLayout;
 	private Button toDoEventsButton;
 	private Table toDoEventsTable;
-	
+
 	private HorizontalLayout generalEventsLayout;
 	private Button generalEventsButton;
 	private Table generalEventsTable;
-	
+
+	private HorizontalLayout monthlyEventsLayout;
+	private Button monthlyEventsButton;
+	private Table monthlyEventsTable;
+
 	private Table infoTable;
 
 	private enum EvenType {
-		POST("POST_", "RECEIVED", "NOT RECEIVED"), TODO("TODO_", "DONE", "NOT DONE"), GENERAL("GENERAL_", "", "");
+		POST("POST_", "RECEIVED", "NOT RECEIVED"), TODO("TODO_", "DONE", "NOT DONE"), GENERAL("GENERAL_", "",
+				""), MONTHLY("MONTHLY_", "", "");
 
 		private String type;
 		private String done;
@@ -98,11 +104,11 @@ public class GeneralInfo extends VerticalLayout implements View {
 		addComponent(panel);
 		setExpandRatio(navLayout, 1);
 		setExpandRatio(panel, 10);
-		
+
 		setStyleName("generalInfoBackground");
-		
+
 	}
-	
+
 	private void setNavLayout() {
 		navLayout.setMargin(true);
 		navLayout.setSpacing(true);
@@ -128,7 +134,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		});
 		navLayout.addComponent(filmsButton);
 		navLayout.setComponentAlignment(filmsButton, Alignment.TOP_CENTER);
-		
+
 		Button musicButton = new Button("Music", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -143,8 +149,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		addComponent(navLayout);
 		setComponentAlignment(navLayout, Alignment.TOP_CENTER);
 	}
-	
-	
+
 	private void setInfoLayout() {
 		infoLayout.setMargin(true);
 		infoLayout.setSpacing(true);
@@ -209,16 +214,19 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		toDoEventsButton = new Button("TODO", new EventButtonListener(EvenType.TODO.type));
 		eventsButtonLayout.addComponent(toDoEventsButton);
-		
+
 		generalEventsButton = new Button("GENERAL", new EventButtonListener(EvenType.GENERAL.type));
 		eventsButtonLayout.addComponent(generalEventsButton);
-		
+
+		monthlyEventsButton = new Button("MONTHLY", new EventButtonListener(EvenType.MONTHLY.type));
+		eventsButtonLayout.addComponent(monthlyEventsButton);
+
 		eventsButtonLayout.setExpandRatio(postEventsButton, 1);
 		eventsButtonLayout.setExpandRatio(toDoEventsButton, 1);
 		eventsButtonLayout.setExpandRatio(generalEventsButton, 1);
 		eventLayout.addComponent(eventsButtonLayout);
 	}
-	
+
 	private void removeAllEventComponents() {
 		if (toDoEventsLayout != null) {
 			eventLayout.removeComponent(toDoEventsLayout);
@@ -227,21 +235,17 @@ public class GeneralInfo extends VerticalLayout implements View {
 		if (generalEventsLayout != null) {
 			eventLayout.removeComponent(generalEventsLayout);
 		}
-		
+
 		if (postEventsLayout != null) {
 			eventLayout.removeComponent(postEventsLayout);
+		}
+
+		if (monthlyEventsLayout != null) {
+			eventLayout.removeComponent(monthlyEventsLayout);
 		}
 	}
 
 	private void setPostEvents() {
-//		if (toDoEventsLayout != null) {
-//			eventLayout.removeComponent(toDoEventsLayout);
-//		}
-//
-//		if (generalEventsLayout != null) {
-//			eventLayout.removeComponent(generalEventsLayout);
-//		}
-
 		Button addNewEventButton = new Button("Add Post", new AddEventButtonListener());
 
 		postEventsLayout = new HorizontalLayout();
@@ -254,17 +258,15 @@ public class GeneralInfo extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-	        protected String formatPropertyValue(Object rowId, Object colId, Property< ? > property)
-	        {
-	            Object v = property.getValue();
-	            if (v instanceof Date)
-	            {
-	            	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	            	Date dateValue = (Date)v;
-	                return df.format(dateValue);
-	            }
-	            return super.formatPropertyValue(rowId, colId, property);
-	        }
+			protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+				Object v = property.getValue();
+				if (v instanceof Date) {
+					SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+					Date dateValue = (Date) v;
+					return df.format(dateValue);
+				}
+				return super.formatPropertyValue(rowId, colId, property);
+			}
 		};
 		postEventsTable.setStyleName("infoTable");
 		postEventsTable.addGeneratedColumn("Received?", new ColumnGenerator() {
@@ -316,14 +318,6 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void setTODOEvents() {
-//		if (postEventsLayout != null) {
-//			eventLayout.removeComponent(postEventsLayout);
-//		}
-//
-//		if (generalEventsLayout != null) {
-//			eventLayout.removeComponent(generalEventsLayout);
-//		}
-
 		Button addNewEventButton = new Button("Add TODO", new AddEventButtonListener());
 
 		toDoEventsLayout = new HorizontalLayout();
@@ -339,17 +333,15 @@ public class GeneralInfo extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-	        protected String formatPropertyValue(Object rowId, Object colId, Property< ? > property)
-	        {
-	            Object v = property.getValue();
-	            if (v instanceof Date)
-	            {
-	            	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	            	Date dateValue = (Date)v;
-	                return df.format(dateValue);
-	            }
-	            return super.formatPropertyValue(rowId, colId, property);
-	        }
+			protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+				Object v = property.getValue();
+				if (v instanceof Date) {
+					SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+					Date dateValue = (Date) v;
+					return df.format(dateValue);
+				}
+				return super.formatPropertyValue(rowId, colId, property);
+			}
 		};
 		toDoEventsTable.setStyleName("infoTable");
 		toDoEventsTable.addGeneratedColumn("Done?", new ColumnGenerator() {
@@ -401,14 +393,6 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void setGeneralEvents() {
-//		if (postEventsLayout != null) {
-//			eventLayout.removeComponent(postEventsLayout);
-//		}
-//
-//		if (toDoEventsLayout != null) {
-//			eventLayout.removeComponent(toDoEventsLayout);
-//		}
-
 		Button addNewEventButton = new Button("Add General", new AddEventButtonListener());
 
 		generalEventsLayout = new HorizontalLayout();
@@ -421,17 +405,15 @@ public class GeneralInfo extends VerticalLayout implements View {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-	        protected String formatPropertyValue(Object rowId, Object colId, Property< ? > property)
-	        {
-	            Object v = property.getValue();
-	            if (v instanceof Date)
-	            {
-	            	SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-	            	Date dateValue = (Date)v;
-	                return df.format(dateValue);
-	            }
-	            return super.formatPropertyValue(rowId, colId, property);
-	        }
+			protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
+				Object v = property.getValue();
+				if (v instanceof Date) {
+					SimpleDateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+					Date dateValue = (Date) v;
+					return df.format(dateValue);
+				}
+				return super.formatPropertyValue(rowId, colId, property);
+			}
 		};
 		generalEventsTable.setStyleName("infoTable");
 		setGeneralEventTable();
@@ -466,6 +448,51 @@ public class GeneralInfo extends VerticalLayout implements View {
 		generalEventsTable.setSelectable(true);
 		generalEventsLayout.addComponent(generalEventsTable);
 		eventLayout.addComponent(generalEventsLayout);
+	}
+
+	private void setMonthlyEvents() {
+		Button addNewEventButton = new Button("Add Monthly", new AddEventButtonListener());
+
+		monthlyEventsLayout = new HorizontalLayout();
+		monthlyEventsLayout.setSpacing(true);
+		monthlyEventsLayout.setMargin(true);
+		monthlyEventsLayout.addComponent(addNewEventButton);
+		monthlyEventsLayout.setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
+
+		monthlyEventsTable = new Table();
+		monthlyEventsTable.setStyleName("infoTable");
+		setMonthlyEventTable();
+		monthlyEventsTable.addActionHandler(new Handler() {
+			private static final long serialVersionUID = 1L;
+			private final Action ACTION_DELETE = new Action("Delete");
+			private final Action ACTION_OPEN = new Action("Open");
+			private final Action ACTION_NEW = new Action("New");
+			private final Action ACTION_EDIT = new Action("Edit");
+			// Action sets
+			private final Action[] ACTIONS = new Action[] { ACTION_DELETE, ACTION_OPEN, ACTION_NEW, ACTION_EDIT };
+
+			@Override
+			public void handleAction(Action action, Object sender, Object target) {
+				if (action == ACTION_OPEN) {
+					openEventWindow((EventBean) monthlyEventsTable.getValue(), false);
+				} else if (action == ACTION_DELETE) {
+					generalInfoDAO.deleteEvent(((EventBean) monthlyEventsTable.getValue()).getId());
+					refreshEventTable();
+				} else if (action == ACTION_EDIT) {
+					openEventWindow((EventBean) monthlyEventsTable.getValue(), true);
+				} else if (action == ACTION_NEW) {
+					openEventWindow(null, true);
+				}
+			}
+
+			@Override
+			public Action[] getActions(Object target, Object sender) {
+				return ACTIONS;
+			}
+		});
+		monthlyEventsTable.setSelectable(true);
+		monthlyEventsLayout.addComponent(monthlyEventsTable);
+		eventLayout.addComponent(monthlyEventsLayout);
 	}
 
 	private void createNewEvent() {
@@ -506,19 +533,18 @@ public class GeneralInfo extends VerticalLayout implements View {
 				newEventWindow.close();
 			}
 		});
-		
+
 		Button closeButton = new Button("Close", new ClickListener() {
-			
-			
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				newEventWindow.close();
-				
+
 			}
 		});
-		
+
 		newEventLayout.addComponent(newEventNameField);
 		newEventLayout.addComponent(newEventCommentField);
 		newEventLayout.addComponent(newEventSetDateField);
@@ -598,25 +624,24 @@ public class GeneralInfo extends VerticalLayout implements View {
 			newInfoLayout.addComponent(newInfoSubmitButton);
 		}
 		Button closeButton = new Button("Close", new ClickListener() {
-			
-			
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				newInfoWindow.close();
-				
+
 			}
 		});
 		newInfoLayout.addComponent(closeButton);
-		
+
 		newInfoWindow.setContent(newInfoLayout);
 		newInfoWindow.setWidth("25%");
 		newInfoWindow.setHeight("35%");
 		newInfoWindow.center();
 		getUI().addWindow(newInfoWindow);
 	}
-	
+
 	private void openEventWindow(final EventBean eventBean, boolean enabledForEditing) {
 		final Window eventWindow = new Window();
 
@@ -633,7 +658,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 				eventNameField.setReadOnly(true);
 			}
 		}
-		
+
 		final DateField eventSetDateField = new DateField("Set Date");
 		if (eventBean != null) {
 			eventSetDateField.setValue(eventBean.getEventSetDate());
@@ -649,7 +674,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 				eventETADateField.setReadOnly(true);
 			}
 		}
-		
+
 		final TextField eventCommentField = new TextField();
 		if (eventBean == null) {
 			eventCommentField.setInputPrompt("enter comment");
@@ -675,9 +700,12 @@ public class GeneralInfo extends VerticalLayout implements View {
 					String eventName = eventNameField.getValue();
 					if (eventName != null && eventName.length() > 0) {
 						if (eventBean == null) {
-							generalInfoDAO.addNewEvent(eventName, eventSetDateField.getValue(), eventETADateField.getValue(), eventCommentField.getValue(), eventType);
+							generalInfoDAO.addNewEvent(eventName, eventSetDateField.getValue(),
+									eventETADateField.getValue(), eventCommentField.getValue(), eventType);
 						} else {
-							generalInfoDAO.setEventData(eventBean.getId(), eventNameField.getValue(), eventSetDateField.getValue(), eventETADateField.getValue(), eventCommentField.getValue(), eventType);
+							generalInfoDAO.setEventData(eventBean.getId(), eventNameField.getValue(),
+									eventSetDateField.getValue(), eventETADateField.getValue(),
+									eventCommentField.getValue(), eventType);
 						}
 						refreshEventTable();
 					} else {
@@ -689,19 +717,17 @@ public class GeneralInfo extends VerticalLayout implements View {
 			eventLayout.addComponent(eventSubmitButton);
 		}
 		Button closeButton = new Button("Close", new ClickListener() {
-			
-			
+
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			public void buttonClick(ClickEvent event) {
 				eventWindow.close();
-				
+
 			}
 		});
 		eventLayout.addComponent(closeButton);
-		
-		
+
 		eventWindow.setContent(eventLayout);
 		eventWindow.setWidth("25%");
 		eventWindow.setHeight("35%");
@@ -709,14 +735,14 @@ public class GeneralInfo extends VerticalLayout implements View {
 		getUI().addWindow(eventWindow);
 	}
 
-	private void refreshInfoTable(){
+	private void refreshInfoTable() {
 		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
 				generalInfoDAO.getAllInfos());
 		infoTable.setContainerDataSource(infosContainer);
 		infoTable.setVisibleColumns("infoKey", "infoValue", "comment");
 		infoTable.setColumnHeaders("Info Key", "Info Value", "Comment");
 	}
-	
+
 	private void refreshEventTable() {
 		if (eventType.equals(EvenType.POST.type)) {
 			setPostEventTable();
@@ -726,39 +752,61 @@ public class GeneralInfo extends VerticalLayout implements View {
 			setGeneralEventTable();
 		}
 	}
-	
-	private void setToDoEventTable(){
+
+	private void setToDoEventTable() {
 		BeanItemContainer<EventBean> toDoEventsContainer = new BeanItemContainer<>(EventBean.class,
 				generalInfoDAO.getAllEventsByType(EvenType.TODO.type));
 		toDoEventsTable.setContainerDataSource(toDoEventsContainer);
 		toDoEventsTable.setVisibleColumns("eventName", "eventSetDate", "eventETADate", "Done?");
 		toDoEventsTable.setColumnHeaders("Event", "Set Date", "ETA Date", "Done?");
 	}
-	
-	private void setPostEventTable(){
+
+	private void setPostEventTable() {
 		BeanItemContainer<EventBean> postEventsContainer = new BeanItemContainer<>(EventBean.class,
-//				generalInfoDAO.getAllEventsByType(EvenType.POST.type));
+				// generalInfoDAO.getAllEventsByType(EvenType.POST.type));
 				generalInfoDAO.getPostEventsNotReceived());
 		postEventsTable.setContainerDataSource(postEventsContainer);
 		postEventsTable.setVisibleColumns("eventName", "eventSetDate", "Received?");
 		postEventsTable.setColumnHeaders("Event", "Order Date", "Received?");
-		
+
 	}
-	
-	private void setGeneralEventTable(){
+
+	private void setGeneralEventTable() {
 		BeanItemContainer<EventBean> generalEventsContainer = new BeanItemContainer<>(EventBean.class,
 				generalInfoDAO.getAllEventsByType(EvenType.GENERAL.type));
 		generalEventsTable.setContainerDataSource(generalEventsContainer);
 		generalEventsTable.setVisibleColumns("eventName", "eventSetDate", "eventETADate", "comment");
 		generalEventsTable.setColumnHeaders("Event", "Set Date", "ETA Date", "Comment");
 	}
-	
+
+	private void setMonthlyEventTable() {
+
+		ArrayList<EventBean> allMonthlies = generalInfoDAO.getAllEventsByType(EvenType.MONTHLY.type);
+		BeanItemContainer<EventBean> generalEventsContainer = new BeanItemContainer<>(EventBean.class, allMonthlies);
+		monthlyEventsTable.setContainerDataSource(generalEventsContainer);
+		monthlyEventsTable.setVisibleColumns("eventName", "comment");
+		monthlyEventsTable.setColumnHeaders("Monthly", "Payment");
+		monthlyEventsTable.setFooterVisible(true);
+
+		double totalSum = 0.0;
+		for (EventBean eventBean : allMonthlies) {
+			try {
+				int tmpSum = Integer.valueOf(eventBean.getComment());
+				totalSum += tmpSum;
+			} catch (NumberFormatException e) {
+				// do nothing
+			}
+		}
+		monthlyEventsTable.setColumnFooter("eventName", "Total");
+		monthlyEventsTable.setColumnFooter("comment", totalSum + "");
+		monthlyEventsTable.setPageLength(allMonthlies.size());
+	}
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 		Notification.show("HIIII, GEN MEN=)");
 
 	}
-	
 
 	private class SetEventETADateNowButtonListener implements ClickListener {
 
@@ -782,7 +830,6 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		}
 	}
-
 
 	private class AddEventButtonListener implements ClickListener {
 
@@ -823,6 +870,8 @@ public class GeneralInfo extends VerticalLayout implements View {
 				setPostEvents();
 			} else if (eventType.equals(EvenType.TODO.type)) {
 				setTODOEvents();
+			} else if (eventType.equals(EvenType.MONTHLY.type)) {
+				setMonthlyEvents();
 			} else {
 				setGeneralEvents();
 			}
