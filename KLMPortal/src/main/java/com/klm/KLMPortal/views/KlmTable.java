@@ -1,20 +1,23 @@
 package com.klm.KLMPortal.views;
 
-import com.vaadin.data.Item;
 import com.vaadin.event.Action;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.ItemClick;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.components.grid.ItemClickListener;
 
-public class KlmTable extends CustomComponent implements Action.Handler, ClickListener {
+public class KlmTable<T> extends CustomComponent implements Action.Handler, ClickListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static final Action ACTION_DELETE = new Action("Delete");
 	private static final Action ACTION_OPEN = new Action("Open");
 	private static final Action ACTION_NEW = new Action("New");
@@ -28,7 +31,7 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 	Button newSelectedButton;
 	Button editSelectedButton;
 
-	Table table;
+	Grid<T> table;
 
 	public KlmTable(String caption) {
 		VerticalLayout mainLayout = new VerticalLayout();
@@ -51,10 +54,10 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 		buttonLayout.addComponent(editSelectedButton);
 		mainLayout.addComponent(buttonLayout);
 
-		table = new Table(caption);
-		table.setSelectable(true);
-		table.setImmediate(true);
-		table.addActionHandler(this);
+		table = new Grid<T>(caption);
+//		table.setSelectable(true);
+//		table.setImmediate(true);
+//		table.addActionHandler(this);
 		mainLayout.addComponent(table);
 	}
 
@@ -74,15 +77,14 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 		return editSelectedButton;
 	}
 
-	public Table getTable() {
+	public Grid<T> getTable() {
 		return table;
 	}
 
 	@Override
 	public void buttonClick(ClickEvent event) {
 		final Button b = event.getButton();
-		Object selectedId = table.getValue();
-		Item item = table.getItem(selectedId);
+		Object item = table.getSelectedItems().iterator().next();
 		if (b == openSelectedButton) {
 			open(item);
 		} else if (b == editSelectedButton) {
@@ -102,7 +104,7 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 	@Override
 	public void handleAction(Action action, Object sender, Object target) {
 		if (sender == table) {
-			Item item = table.getItem(target);
+			Object item = table.getSelectedItems().iterator().next();
 			if (action == ACTION_OPEN) {
 				open(item);
 			} else if (action == ACTION_DELETE) {
@@ -116,15 +118,15 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 
 	}
 
-	public void open(Item target){
+	public void open(Object target){
 		//do sth
 	}
 
-	public void delete(Item target){
+	public void delete(Object target){
 		//do sth
 	}
 
-	public void edit(Item target){
+	public void edit(Object target){
 		//do sth
 	}
 
@@ -133,11 +135,11 @@ public class KlmTable extends CustomComponent implements Action.Handler, ClickLi
 	}
 	
 
-	private class TableSelectListener implements ItemClickListener {
+	private class TableSelectListener implements ItemClickListener<T> {
 
 		@Override
-		public void itemClick(ItemClickEvent event) {
-			if (event.isDoubleClick()) {
+		public void itemClick(ItemClick<T> event) {
+			if (event.getMouseEventDetails().isDoubleClick()) {
 				open(event.getItem());
 			}
 			

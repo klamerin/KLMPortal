@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.klm.KLMPortal.beans.MovieBean;
@@ -85,7 +86,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), rslt.getBoolean("SOCIAL"));
@@ -136,7 +137,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), rslt.getBoolean("SOCIAL"));
@@ -185,7 +186,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), rslt.getBoolean("SOCIAL"));
@@ -234,7 +235,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), false);
@@ -283,7 +284,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), true);
@@ -334,7 +335,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			con.commit();
 			while (rslt.next()) {
 				MovieBean film = new MovieBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getDouble("RATING"),
-						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED"),
+						rslt.getString("COMMENT"), rslt.getBoolean("WATCHED"), rslt.getDate("LAST_WATCHED") != null ? rslt.getDate("LAST_WATCHED").toLocalDate() : null,
 						rslt.getTimestamp("LAST_MODIFIED"), rslt.getBoolean("RECOMMEND"),
 						rslt.getString("WATCHED_BECAUSE"), rslt.getDouble("SADNESS_LEVEL"), rslt.getInt("DESIRE_LEVEL"),
 						rslt.getBoolean("REWATCH_NEEDED"), rslt.getInt("WATCH_COUNT"), rslt.getBoolean("SOCIAL"));
@@ -368,7 +369,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 	}
 
 	@Override
-	public void addNewMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend,
+	public void addNewMovie(String name, Boolean watched, Double rating, String comment, LocalDate date, Boolean recommend,
 			String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Boolean social) {
 		String sql = sqlMapping.getValue("Movie.addMovie");
 		Connection con = null;
@@ -392,7 +393,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			}
 			ps.setBoolean(4, watched);
 			if (date != null) {
-				ps.setDate(5, date);
+				ps.setDate(5, Date.valueOf(date));
 			} else {
 				ps.setNull(5, Types.TIMESTAMP);
 			}
@@ -463,7 +464,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 	};
 
 	@Override
-	public void editMovie(String name, Boolean watched, Double rating, String comment, Date date, Boolean recommend,
+	public void editMovie(String name, Boolean watched, Double rating, String comment, LocalDate date, Boolean recommend,
 			String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Boolean social, Integer id) {
 		String sql = sqlMapping.getValue("Movie.editMovie");
 		Connection con = null;
@@ -491,7 +492,7 @@ public class MovieDAOImpl extends AbstractDAO implements IMovieDAO {
 			}
 			ps.setBoolean(4, watched);
 			if (date != null) {
-				ps.setDate(5, date);
+				ps.setDate(5, Date.valueOf(date));
 			} else {
 				ps.setNull(5, Types.TIMESTAMP);
 			}

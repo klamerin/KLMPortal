@@ -23,6 +23,8 @@ public class StartView extends HorizontalLayout implements View {
 
 		setSizeFull();
 		addStyleName("startViewBackground");
+		HorizontalLayout buttonsLayout = new HorizontalLayout();
+		buttonsLayout.setWidthUndefined();
 		Button filmsButton = new Button("Go to Films View", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -32,8 +34,8 @@ public class StartView extends HorizontalLayout implements View {
 				nav.navigateTo(FILMSVIEW);
 			}
 		});
-		addComponent(filmsButton);
-		setComponentAlignment(filmsButton, Alignment.MIDDLE_CENTER);
+		buttonsLayout.addComponent(filmsButton);
+		buttonsLayout.setComponentAlignment(filmsButton, Alignment.MIDDLE_CENTER);
 		Button genInfobutton = new Button("Go to General Info View", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
@@ -44,10 +46,10 @@ public class StartView extends HorizontalLayout implements View {
 			}
 		});
 		genInfobutton.setStyleName("transparentButton");
-		addComponent(genInfobutton);
-		setComponentAlignment(genInfobutton, Alignment.MIDDLE_CENTER);
+		buttonsLayout.addComponent(genInfobutton);
+		buttonsLayout.setComponentAlignment(genInfobutton, Alignment.MIDDLE_CENTER);
 		
-		Button musicButton = new Button("Music", new Button.ClickListener() {
+		Button musicButton = new Button("Go to Music View", new Button.ClickListener() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -56,11 +58,13 @@ public class StartView extends HorizontalLayout implements View {
 				nav.navigateTo(MUSICSVIEW);
 			}
 		});
-		addComponent(musicButton);
-		setComponentAlignment(musicButton, Alignment.MIDDLE_CENTER);
+		buttonsLayout.addComponent(musicButton);
+		buttonsLayout.setComponentAlignment(musicButton, Alignment.MIDDLE_CENTER);
 		
-		setSpacing(true);
-		setMargin(true);
+		buttonsLayout.setSpacing(true);
+		buttonsLayout.setMargin(true);
+		addComponent(buttonsLayout);
+		setComponentAlignment(buttonsLayout, Alignment.MIDDLE_CENTER);
 	}
 
 	@Override

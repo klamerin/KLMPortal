@@ -1,7 +1,7 @@
 package com.klm.KLMPortal.beans;
 
-import java.sql.Date;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 
 public class MovieBean {
 
@@ -10,7 +10,7 @@ public class MovieBean {
 	private Double rating;
 	private String comment;
 	private boolean watched;
-	private Date watchedDate;
+	private LocalDate watchedDate;
 	private Timestamp lastModified;
 	private boolean recommend;
 	private String watchedBecause;
@@ -24,7 +24,7 @@ public class MovieBean {
 		super();
 	}
 
-	public MovieBean(Integer id, String name, Double rating, String comment, boolean watched, Date watchedDate,
+	public MovieBean(Integer id, String name, Double rating, String comment, boolean watched, LocalDate watchedDate,
 			Timestamp lastModified, boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, boolean rewatchNeeded, int watchCount,  boolean social) {
 		super();
 		this.id = id;
@@ -83,11 +83,11 @@ public class MovieBean {
 		this.watched = watched;
 	}
 
-	public Date getWatchedDate() {
+	public LocalDate getWatchedDate() {
 		return watchedDate;
 	}
 
-	public void setWatchedDate(Date watchedDate) {
+	public void setWatchedDate(LocalDate watchedDate) {
 		this.watchedDate = watchedDate;
 	}
 

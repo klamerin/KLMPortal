@@ -1,37 +1,32 @@
 package com.klm.KLMPortal.views;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.klm.KLMPortal.beans.EventBean;
 import com.klm.KLMPortal.beans.InfoBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
-import com.vaadin.data.Property;
-import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.Action;
-import com.vaadin.event.Action.Handler;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
-import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.DateField;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.Grid;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Table;
-import com.vaadin.ui.Table.ColumnGenerator;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
+import com.vaadin.ui.components.grid.FooterRow;
+import com.vaadin.ui.renderers.ClickableRenderer.RendererClickEvent;
+import com.vaadin.ui.renderers.ClickableRenderer.RendererClickListener;
 
 public class GeneralInfo extends VerticalLayout implements View {
 
@@ -59,21 +54,21 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 	private HorizontalLayout postEventsLayout;
 	private Button postEventsButton;
-	private Table postEventsTable;
+	private Grid<EventBean> postEventsTable;
 
 	private HorizontalLayout toDoEventsLayout;
 	private Button toDoEventsButton;
-	private Table toDoEventsTable;
+	private Grid<EventBean> toDoEventsTable;
 
 	private HorizontalLayout generalEventsLayout;
 	private Button generalEventsButton;
-	private Table generalEventsTable;
+	private Grid<EventBean> generalEventsTable;
 
 	private HorizontalLayout monthlyEventsLayout;
 	private Button monthlyEventsButton;
-	private Table monthlyEventsTable;
+	private Grid<EventBean> monthlyEventsTable;
 
-	private Table infoTable;
+	private Grid<InfoBean> infoTable;
 
 	private enum EvenType {
 		POST("POST_", "RECEIVED", "NOT RECEIVED"), TODO("TODO_", "DONE", "NOT DONE"), GENERAL("GENERAL_", "",
@@ -160,13 +155,14 @@ public class GeneralInfo extends VerticalLayout implements View {
 		infoLayout.addComponent(addNewInfoButton);
 		infoLayout.setComponentAlignment(addNewInfoButton, Alignment.TOP_LEFT);
 
-		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
-				generalInfoDAO.getAllInfos());
-		infoTable = new Table();
+//		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
+//				generalInfoDAO.getAllInfos());
+		infoTable = new Grid<InfoBean>(InfoBean.class);
+		infoTable.setItems(generalInfoDAO.getAllInfos());
 		infoTable.setStyleName("infoTable");
-		infoTable.setContainerDataSource(infosContainer);
-		infoTable.setSelectable(true);
-		infoTable.addActionHandler(new Handler() {
+//		infoTable.setContainerDataSource(infosContainer);
+//		infoTable.setSelectable(true);
+		/*infoTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
 			private final Action ACTION_DELETE = new Action("Delete");
 			private final Action ACTION_OPEN = new Action("Open");
@@ -193,9 +189,12 @@ public class GeneralInfo extends VerticalLayout implements View {
 			public Action[] getActions(Object target, Object sender) {
 				return ACTIONS;
 			}
-		});
-		infoTable.setVisibleColumns("infoKey", "infoValue", "comment");
-		infoTable.setColumnHeaders("Info Key", "Info Value", "Comment");
+		});*/
+		
+		infoTable.setColumns("infoKey", "infoValue", "comment");
+		infoTable.getColumn("infoKey").setCaption("Info Key");
+		infoTable.getColumn("infoValue").setCaption("Info Value");
+		infoTable.getColumn("comment").setCaption("Comment");
 		infoLayout.addComponent(infoTable);
 		infoLayout.setComponentAlignment(infoTable, Alignment.TOP_RIGHT);
 	}
@@ -254,7 +253,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		postEventsLayout.addComponent(addNewEventButton);
 		postEventsLayout.setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
 
-		postEventsTable = new Table() {
+		postEventsTable = new Grid<EventBean>(EventBean.class);/* {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -267,23 +266,27 @@ public class GeneralInfo extends VerticalLayout implements View {
 				}
 				return super.formatPropertyValue(rowId, colId, property);
 			}
-		};
+		};*/
 		postEventsTable.setStyleName("infoTable");
-		postEventsTable.addGeneratedColumn("Received?", new ColumnGenerator() {
-
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			public Object generateCell(Table source, Object itemId, Object columnId) {
-				EventBean currentEvent = (EventBean) itemId;
-				if (currentEvent.getComment().equals(EvenType.POST.undone)) {
-					return new Button("Got It!", new SetEventETADateNowButtonListener(currentEvent.getId()));
-				} else {
-					return new Embedded(null, new ThemeResource("icons/received_main.png"));
-				}
-			}
-		});
-		setPostEventTable();
+//		postEventsTable.addGeneratedColumn("Received?", new ColumnGenerator() {
+//
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			public Object generateCell(Table source, Object itemId, Object columnId) {
+//				EventBean currentEvent = (EventBean) itemId;
+//				if (currentEvent.getComment().equals(EvenType.POST.undone)) {
+//					return new Button("Got It!", new SetEventETADateNowButtonListener(currentEvent.getId()));
+//				} else {
+//					return new Embedded(null, new ThemeResource("icons/received_main.png"));
+//				}
+//			}
+//		});
+		postEventsTable.setItems(generalInfoDAO.getPostEventsNotReceived());
+		postEventsTable.setColumns("eventName", "eventSetDate"/*, "Received?"*/);
+		/*postEventsTable.setColumnHeaders("Event", "Order Date", "Received?");
+		postEventsTable.addColumn(EventBean -> "Received?",
+				new ButtonRenderer<EventBean>(new SetEventETADateNowButtonListener(currentEvent.getId()));
 		postEventsTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
 			private final Action ACTION_DELETE = new Action("Delete");
@@ -312,7 +315,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 				return ACTIONS;
 			}
 		});
-		postEventsTable.setSelectable(true);
+		postEventsTable.setSelectable(true);*/
 		postEventsLayout.addComponent(postEventsTable);
 		eventLayout.addComponent(postEventsLayout);
 	}
@@ -326,11 +329,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		toDoEventsLayout.addComponent(addNewEventButton);
 		toDoEventsLayout.setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
 
-		toDoEventsTable = new Table() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
+		toDoEventsTable = new Grid<EventBean>(EventBean.class);/* {
 
 			@Override
 			protected String formatPropertyValue(Object rowId, Object colId, Property<?> property) {
@@ -342,9 +341,9 @@ public class GeneralInfo extends VerticalLayout implements View {
 				}
 				return super.formatPropertyValue(rowId, colId, property);
 			}
-		};
+		};*/
 		toDoEventsTable.setStyleName("infoTable");
-		toDoEventsTable.addGeneratedColumn("Done?", new ColumnGenerator() {
+		/*toDoEventsTable.addGeneratedColumn("Done?", new ColumnGenerator() {
 
 			private static final long serialVersionUID = 1L;
 
@@ -357,9 +356,9 @@ public class GeneralInfo extends VerticalLayout implements View {
 					return new Embedded(null, new ThemeResource("icons/done_main.png"));
 				}
 			}
-		});
+		});*/
 		setToDoEventTable();
-		toDoEventsTable.addActionHandler(new Handler() {
+		/*toDoEventsTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
 			private final Action ACTION_DELETE = new Action("Delete");
 			private final Action ACTION_OPEN = new Action("Open");
@@ -386,8 +385,8 @@ public class GeneralInfo extends VerticalLayout implements View {
 			public Action[] getActions(Object target, Object sender) {
 				return ACTIONS;
 			}
-		});
-		toDoEventsTable.setSelectable(true);
+		});*/
+//		toDoEventsTable.setSelectable(true);
 		toDoEventsLayout.addComponent(toDoEventsTable);
 		eventLayout.addComponent(toDoEventsLayout);
 	}
@@ -401,7 +400,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 		generalEventsLayout.addComponent(addNewEventButton);
 		generalEventsLayout.setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
 
-		generalEventsTable = new Table() {
+		generalEventsTable = new Grid<EventBean>(EventBean.class);/* {
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -414,10 +413,10 @@ public class GeneralInfo extends VerticalLayout implements View {
 				}
 				return super.formatPropertyValue(rowId, colId, property);
 			}
-		};
+		};*/
 		generalEventsTable.setStyleName("infoTable");
 		setGeneralEventTable();
-		generalEventsTable.addActionHandler(new Handler() {
+		/*generalEventsTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
 			private final Action ACTION_DELETE = new Action("Delete");
 			private final Action ACTION_OPEN = new Action("Open");
@@ -445,7 +444,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 				return ACTIONS;
 			}
 		});
-		generalEventsTable.setSelectable(true);
+		generalEventsTable.setSelectable(true);*/
 		generalEventsLayout.addComponent(generalEventsTable);
 		eventLayout.addComponent(generalEventsLayout);
 	}
@@ -459,10 +458,10 @@ public class GeneralInfo extends VerticalLayout implements View {
 		monthlyEventsLayout.addComponent(addNewEventButton);
 		monthlyEventsLayout.setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
 
-		monthlyEventsTable = new Table();
+		monthlyEventsTable = new Grid<EventBean>(EventBean.class);
 		monthlyEventsTable.setStyleName("infoTable");
 		setMonthlyEventTable();
-		monthlyEventsTable.addActionHandler(new Handler() {
+		/*monthlyEventsTable.addActionHandler(new Handler() {
 			private static final long serialVersionUID = 1L;
 			private final Action ACTION_DELETE = new Action("Delete");
 			private final Action ACTION_OPEN = new Action("Open");
@@ -490,7 +489,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 				return ACTIONS;
 			}
 		});
-		monthlyEventsTable.setSelectable(true);
+		monthlyEventsTable.setSelectable(true);*/
 		monthlyEventsLayout.addComponent(monthlyEventsTable);
 		eventLayout.addComponent(monthlyEventsLayout);
 	}
@@ -502,9 +501,9 @@ public class GeneralInfo extends VerticalLayout implements View {
 		newEventLayout.setSpacing(true);
 		newEventLayout.setMargin(true);
 		final TextField newEventNameField = new TextField();
-		newEventNameField.setInputPrompt("event name");
+		newEventNameField.setPlaceholder("event name");
 		final TextField newEventCommentField = new TextField();
-		newEventCommentField.setInputPrompt("event comment");
+		newEventCommentField.setPlaceholder("event comment");
 		final DateField newEventSetDateField = new DateField("Set Date");
 		final DateField newEventETADateField = new DateField("ETA Date");
 		if (eventType.equals(EvenType.POST.type)) {
@@ -568,14 +567,14 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		final TextField newInfoKeyField = new TextField();
 		if (info == null) {
-			newInfoKeyField.setInputPrompt("enter info key");
+			newInfoKeyField.setPlaceholder("enter info key");
 		} else {
 			newInfoKeyField.setValue(info.getInfoKey());
 			newInfoKeyField.setReadOnly(true);
 		}
 		final TextField newInfoValueField = new TextField();
 		if (info == null) {
-			newInfoValueField.setInputPrompt("enter info value");
+			newInfoValueField.setPlaceholder("enter info value");
 		} else {
 			newInfoValueField.setValue(info.getInfoValue());
 			if (!enabledForEditing) {
@@ -585,7 +584,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		final TextField newInfoCommentField = new TextField();
 		if (info == null) {
-			newInfoCommentField.setInputPrompt("enter comment");
+			newInfoCommentField.setPlaceholder("enter comment");
 		} else {
 			newInfoCommentField.setValue(info.getComment());
 			if (!enabledForEditing) {
@@ -651,7 +650,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		final TextField eventNameField = new TextField();
 		if (eventBean == null) {
-			eventNameField.setInputPrompt("enter event name");
+			eventNameField.setPlaceholder("enter event name");
 		} else {
 			eventNameField.setValue(eventBean.getEventName());
 			if (!enabledForEditing) {
@@ -677,7 +676,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		final TextField eventCommentField = new TextField();
 		if (eventBean == null) {
-			eventCommentField.setInputPrompt("enter comment");
+			eventCommentField.setPlaceholder("enter comment");
 		} else {
 			eventCommentField.setValue(eventBean.getComment());
 			if (!enabledForEditing) {
@@ -736,11 +735,14 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void refreshInfoTable() {
-		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
-				generalInfoDAO.getAllInfos());
-		infoTable.setContainerDataSource(infosContainer);
-		infoTable.setVisibleColumns("infoKey", "infoValue", "comment");
-		infoTable.setColumnHeaders("Info Key", "Info Value", "Comment");
+//		BeanItemContainer<InfoBean> infosContainer = new BeanItemContainer<>(InfoBean.class,
+//				generalInfoDAO.getAllInfos());
+//		infoTable.setContainerDataSource(infosContainer);
+		infoTable.setItems(generalInfoDAO.getAllInfos());
+		infoTable.setColumns("infoKey", "infoValue", "comment");
+		infoTable.getColumn("infoKey").setCaption("Info Key");
+		infoTable.getColumn("infoValue").setCaption("Info Value");
+		infoTable.getColumn("comment").setCaption("Comment");
 	}
 
 	private void refreshEventTable() {
@@ -754,40 +756,50 @@ public class GeneralInfo extends VerticalLayout implements View {
 	}
 
 	private void setToDoEventTable() {
-		BeanItemContainer<EventBean> toDoEventsContainer = new BeanItemContainer<>(EventBean.class,
-				generalInfoDAO.getAllEventsByType(EvenType.TODO.type));
-		toDoEventsTable.setContainerDataSource(toDoEventsContainer);
-		toDoEventsTable.setVisibleColumns("eventName", "eventSetDate", "eventETADate", "Done?");
-		toDoEventsTable.setColumnHeaders("Event", "Set Date", "ETA Date", "Done?");
+//		BeanItemContainer<EventBean> toDoEventsContainer = new BeanItemContainer<>(EventBean.class,
+//				generalInfoDAO.getAllEventsByType(EvenType.TODO.type));
+		toDoEventsTable.setItems(generalInfoDAO.getAllEventsByType(EvenType.TODO.type));
+		toDoEventsTable.setColumns("eventName", "eventSetDate", "eventETADate"/*, "Done?"*/);
+//		toDoEventsTable.setColumnHeaders("Event", "Set Date", "ETA Date", "Done?");
+		toDoEventsTable.getColumn("eventName").setCaption("Event");
+		toDoEventsTable.getColumn("eventSetDate").setCaption("Set Date");
+		toDoEventsTable.getColumn("eventETADate").setCaption("ETA Date");
+//		toDoEventsTable.getColumn("Done?").setCaption("Done?");
 	}
 
 	private void setPostEventTable() {
-		BeanItemContainer<EventBean> postEventsContainer = new BeanItemContainer<>(EventBean.class,
+//		BeanItemContainer<EventBean> postEventsContainer = new BeanItemContainer<>(EventBean.class,
 				// generalInfoDAO.getAllEventsByType(EvenType.POST.type));
-				generalInfoDAO.getPostEventsNotReceived());
-		postEventsTable.setContainerDataSource(postEventsContainer);
-		postEventsTable.setVisibleColumns("eventName", "eventSetDate", "Received?");
-		postEventsTable.setColumnHeaders("Event", "Order Date", "Received?");
-
+//				generalInfoDAO.getPostEventsNotReceived());
+		postEventsTable.setItems(generalInfoDAO.getPostEventsNotReceived());
+		postEventsTable.setColumns("eventName", "eventSetDate"/*, "Received?"*/);
+//		postEventsTable.setColumnHeaders("Event", "Order Date", "Received?");
+		toDoEventsTable.getColumn("eventName").setCaption("Event");
+		toDoEventsTable.getColumn("eventSetDate").setCaption("Set Date");
 	}
 
 	private void setGeneralEventTable() {
-		BeanItemContainer<EventBean> generalEventsContainer = new BeanItemContainer<>(EventBean.class,
-				generalInfoDAO.getAllEventsByType(EvenType.GENERAL.type));
-		generalEventsTable.setContainerDataSource(generalEventsContainer);
-		generalEventsTable.setVisibleColumns("eventName", "eventSetDate", "eventETADate", "comment");
-		generalEventsTable.setColumnHeaders("Event", "Set Date", "ETA Date", "Comment");
+//		BeanItemContainer<EventBean> generalEventsContainer = new BeanItemContainer<>(EventBean.class,
+//				generalInfoDAO.getAllEventsByType(EvenType.GENERAL.type));
+		generalEventsTable.setItems(generalInfoDAO.getAllEventsByType(EvenType.GENERAL.type));
+		generalEventsTable.setColumns("eventName", "eventSetDate", "eventETADate", "comment");
+		generalEventsTable.getColumn("eventName").setCaption("Event");
+		generalEventsTable.getColumn("eventSetDate").setCaption("Set Date");
+		generalEventsTable.getColumn("eventETADate").setCaption("ETA Date");
+		generalEventsTable.getColumn("comment").setCaption("Comment");
 	}
 
 	private void setMonthlyEventTable() {
 
 		ArrayList<EventBean> allMonthlies = generalInfoDAO.getAllEventsByType(EvenType.MONTHLY.type);
-		BeanItemContainer<EventBean> generalEventsContainer = new BeanItemContainer<>(EventBean.class, allMonthlies);
-		monthlyEventsTable.setContainerDataSource(generalEventsContainer);
-		monthlyEventsTable.setVisibleColumns("eventName", "comment");
-		monthlyEventsTable.setColumnHeaders("Monthly", "Payment");
-		monthlyEventsTable.setFooterVisible(true);
+		monthlyEventsTable.setItems(allMonthlies);
+		monthlyEventsTable.setColumns("eventName", "comment");
+		generalEventsTable.getColumn("eventName").setCaption("Monthly");
+		generalEventsTable.getColumn("comment").setCaption("Payment");
+		
+//		monthlyEventsTable.foosetFooterVisible(true);
 
+		FooterRow footer = generalEventsTable.appendFooterRow();
 		double totalSum = 0.0;
 		for (EventBean eventBean : allMonthlies) {
 			try {
@@ -797,9 +809,12 @@ public class GeneralInfo extends VerticalLayout implements View {
 				// do nothing
 			}
 		}
-		monthlyEventsTable.setColumnFooter("eventName", "Total");
-		monthlyEventsTable.setColumnFooter("comment", totalSum + "");
-		monthlyEventsTable.setPageLength(allMonthlies.size());
+		
+		footer.getCell("eventName").setText("Total");
+		footer.getCell("comment").setText(totalSum + "");
+//		monthlyEventsTable.setColumnFooter("eventName", "Total");
+//		monthlyEventsTable.setColumnFooter("comment", totalSum + "");
+//		monthlyEventsTable.setPageLength(allMonthlies.size());
 	}
 
 	@Override
@@ -808,7 +823,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 	}
 
-	private class SetEventETADateNowButtonListener implements ClickListener {
+	private class SetEventETADateNowButtonListener implements RendererClickListener<EventBean> {//ClickListener {
 
 		private static final long serialVersionUID = 1L;
 
@@ -818,16 +833,27 @@ public class GeneralInfo extends VerticalLayout implements View {
 			this.eventId = eventId;
 		}
 
+//		@Override
+//		public void buttonClick(ClickEvent event) {
+//			if (eventType.equals(EvenType.POST.type)) {
+//				generalInfoDAO.setEventETADate(eventId, new Date());
+//				generalInfoDAO.setEventComment(eventId, EvenType.POST.done);
+//			} else if (eventType.equals(EvenType.TODO.type)) {
+//				generalInfoDAO.setEventComment(eventId, EvenType.TODO.done);
+//			}
+//			refreshEventTable();
+//
+//		}
+
 		@Override
-		public void buttonClick(ClickEvent event) {
+		public void click(RendererClickEvent<EventBean> event) {
 			if (eventType.equals(EvenType.POST.type)) {
-				generalInfoDAO.setEventETADate(eventId, new Date());
+				generalInfoDAO.setEventETADate(eventId, LocalDate.now());
 				generalInfoDAO.setEventComment(eventId, EvenType.POST.done);
 			} else if (eventType.equals(EvenType.TODO.type)) {
 				generalInfoDAO.setEventComment(eventId, EvenType.TODO.done);
 			}
 			refreshEventTable();
-
 		}
 	}
 

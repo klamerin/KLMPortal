@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 
 import com.klm.KLMPortal.beans.EventBean;
 import com.klm.KLMPortal.beans.InfoBean;
@@ -233,7 +233,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			ResultSet rslt = ps.executeQuery();
 			con.commit();
 			while (rslt.next()) {
-				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getDate("EVENT_SET_DATE"), rslt.getDate("EVENT_ETA_DATE"), rslt.getString("COMMENT"));
+				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getDate("EVENT_SET_DATE") != null ? rslt.getDate("EVENT_SET_DATE").toLocalDate() : null, rslt.getDate("EVENT_ETA_DATE") != null ? rslt.getDate("EVENT_ETA_DATE").toLocalDate() : null, rslt.getString("COMMENT"));
 				events.add(event);
 			}
 			rslt.close();
@@ -279,7 +279,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			ResultSet rslt = ps.executeQuery();
 			con.commit();
 			while (rslt.next()) {
-				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getDate("EVENT_SET_DATE"), rslt.getDate("EVENT_ETA_DATE"), rslt.getString("COMMENT"));
+				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getDate("EVENT_SET_DATE") != null ? rslt.getDate("EVENT_SET_DATE").toLocalDate() : null, rslt.getDate("EVENT_ETA_DATE") != null ? rslt.getDate("EVENT_ETA_DATE").toLocalDate() : null, rslt.getString("COMMENT"));
 				events.add(event);
 			}
 			rslt.close();
@@ -327,7 +327,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			ResultSet rslt = ps.executeQuery();
 			con.commit();
 			while (rslt.next()) {
-				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME").replace(eventType, ""), rslt.getDate("EVENT_SET_DATE"), rslt.getDate("EVENT_ETA_DATE"), rslt.getString("COMMENT"));
+				EventBean event = new EventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME").replace(eventType, ""), rslt.getDate("EVENT_SET_DATE") != null ? rslt.getDate("EVENT_SET_DATE").toLocalDate() : null, rslt.getDate("EVENT_ETA_DATE") != null ? rslt.getDate("EVENT_ETA_DATE").toLocalDate() : null, rslt.getString("COMMENT"));
 				events.add(event);
 			}
 			rslt.close();
@@ -358,7 +358,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 	}
 
 	@Override
-	public void addNewEvent(String eventName, Date eventSetDate, Date eventETADate, String comment, String eventType) {
+	public void addNewEvent(String eventName, LocalDate eventSetDate, LocalDate eventETADate, String comment, String eventType) {
 		String sql = sqlMapping.getValue("GeneralInfo.addNewEvent");
 		Connection con = null;
 		int result = 0;
@@ -372,7 +372,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			if (eventETADate == null) {
 				ps.setNull(2, Types.DATE);
 			} else {
-				ps.setDate(2, new java.sql.Date(eventETADate.getTime()));
+				ps.setDate(2, java.sql.Date.valueOf(eventETADate));
 			}
 			if (comment == null) {
 				ps.setNull(3, Types.VARCHAR);
@@ -382,7 +382,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			if (eventSetDate == null) {
 				ps.setDate(4, new java.sql.Date(System.currentTimeMillis()));
 			} else {
-				ps.setDate(4, new java.sql.Date(eventSetDate.getTime()));
+				ps.setDate(4, java.sql.Date.valueOf(eventSetDate));
 			}
 
 			result = ps.executeUpdate();
@@ -416,7 +416,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 	}
 
 	@Override
-	public void setEventETADate(Integer eventId, Date eventETADate) {
+	public void setEventETADate(Integer eventId, LocalDate eventETADate) {
 		String sql = sqlMapping.getValue("GeneralInfo.setEventETADate");
 		Connection con = null;
 		int result = 0;
@@ -429,7 +429,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			if (eventETADate == null) {
 				ps.setDate(1, new java.sql.Date(System.currentTimeMillis()));
 			} else {
-				ps.setDate(1, new java.sql.Date(eventETADate.getTime()));
+				ps.setDate(1, java.sql.Date.valueOf(eventETADate));
 			}
 			ps.setInt(2, eventId);
 			
@@ -464,7 +464,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 	}
 
 	@Override
-	public void setEventSetDate(Integer eventId, Date eventSetDate) {
+	public void setEventSetDate(Integer eventId, LocalDate eventSetDate) {
 		String sql = sqlMapping.getValue("GeneralInfo.setEventSetDate");
 		Connection con = null;
 		int result = 0;
@@ -477,7 +477,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			if (eventSetDate == null) {
 				ps.setDate(1, new java.sql.Date(System.currentTimeMillis()));
 			} else {
-				ps.setDate(1, new java.sql.Date(eventSetDate.getTime()));
+				ps.setDate(1, java.sql.Date.valueOf(eventSetDate));
 			}
 			ps.setInt(2, eventId);
 
@@ -560,7 +560,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 	}
 
 	
-	public void setEventData(Integer eventId, String eventName, Date eventSetDate, Date eventETADate, String comment, String eventType) {
+	public void setEventData(Integer eventId, String eventName, LocalDate eventSetDate, LocalDate eventETADate, String comment, String eventType) {
 //		GeneralInfo.setEventData = UPDATE GENERAL_EVENTS SET EVENT_NAME = ?, EVENT_SET_DATE = ?, EVENT_ETA_DATE = ?, SET COMMENT = ? WHERE ID = ?
 		String sql = sqlMapping.getValue("GeneralInfo.setEventData");
 		Connection con = null;
@@ -575,12 +575,12 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 			if (eventSetDate == null) {
 				ps.setDate(2, new java.sql.Date(System.currentTimeMillis()));
 			} else {
-				ps.setDate(2, new java.sql.Date(eventSetDate.getTime()));
+				ps.setDate(2, java.sql.Date.valueOf(eventSetDate));
 			}
 			if (eventETADate == null) {
 				ps.setNull(3, Types.DATE);
 			} else {
-				ps.setDate(3, new java.sql.Date(eventETADate.getTime()));
+				ps.setDate(3, java.sql.Date.valueOf(eventETADate));
 			}
 			if (comment == null) {
 				ps.setNull(4, Types.VARCHAR);

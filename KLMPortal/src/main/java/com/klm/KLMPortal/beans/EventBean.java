@@ -1,16 +1,17 @@
 package com.klm.KLMPortal.beans;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class EventBean {
 
 	private Integer id;
 	private String eventName;
-	private Date eventSetDate;
-	private Date eventETADate;
+	private LocalDate eventSetDate;
+	private LocalDate eventETADate;
 	private String comment;
 	
-	public EventBean(Integer id, String eventName, Date eventSetDate, Date eventETADate, String comment) {
+	public EventBean(Integer id, String eventName, LocalDate eventSetDate, LocalDate eventETADate, String comment) {
 		super();
 		this.id = id;
 		this.eventName = eventName;
@@ -27,19 +28,19 @@ public class EventBean {
 		this.eventName = eventName;
 	}
 
-	public Date getEventSetDate() {
+	public LocalDate getEventSetDate() {
 		return eventSetDate;
 	}
 
-	public void setEventSetDate(Date eventSetDate) {
+	public void setEventSetDate(LocalDate eventSetDate) {
 		this.eventSetDate = eventSetDate;
 	}
 
-	public Date getEventETADate() {
+	public LocalDate getEventETADate() {
 		return eventETADate;
 	}
 
-	public void setEventETADate(Date eventETADate) {
+	public void setEventETADate(LocalDate eventETADate) {
 		this.eventETADate = eventETADate;
 	}
 
