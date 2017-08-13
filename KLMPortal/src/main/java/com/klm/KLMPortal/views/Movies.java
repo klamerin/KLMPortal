@@ -573,6 +573,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private void setMovieNameTextField(boolean newMovie, MovieBean movie) {
 		movieNameTextField = new TextField("Name");
+		movieNameTextField.setWidth("70%");
 		if (newMovie) {
 			movieNameTextField.setPlaceholder("enter name");
 		} else {

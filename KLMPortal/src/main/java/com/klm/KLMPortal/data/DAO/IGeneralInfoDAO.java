@@ -8,6 +8,7 @@ import com.klm.KLMPortal.beans.GeneralEventBean;
 import com.klm.KLMPortal.beans.InfoBean;
 import com.klm.KLMPortal.beans.MonthlyEventBean;
 import com.klm.KLMPortal.beans.PostEventBean;
+import com.klm.KLMPortal.beans.TodoEventBean;
 
 public interface IGeneralInfoDAO {
 	
@@ -58,11 +59,20 @@ public interface IGeneralInfoDAO {
 	
 	public void deleteMonthlyEvent(Integer eventId);
 	
-	public ArrayList<PostEventBean> getPostEvents(boolean notReceived);
+	public ArrayList<PostEventBean> getPostEvents(Boolean received);
 	
 	public void addNewPostEvent(PostEventBean bean);
 	
 	public void updatePostEvent(PostEventBean bean);
 	
 	public void deletePostEvent(Integer eventId);
+	
+	public ArrayList<TodoEventBean> getAllToDoEvents();
+	
+	public void addNewToDoEvent(TodoEventBean bean);
+	
+	public void updateToDoEvent(TodoEventBean bean);
+	
+	public void deleteToDoEvent(Integer eventId);
+	
 }

@@ -103,7 +103,7 @@ public class GeneralInfo extends VerticalLayout implements View {
 
 		eventView = new Events();
 		eventLayout.addComponent(eventView);
-		infoLayout.setComponentAlignment(eventView, Alignment.TOP_RIGHT);
+		eventLayout.setComponentAlignment(eventView, Alignment.TOP_RIGHT);
 	}
 
 
