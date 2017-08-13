@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import com.klm.KLMPortal.beans.MusicBean;
 import com.klm.KLMPortal.data.AbstractDAO;
@@ -41,7 +42,7 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 			con.commit();
 			while (rslt.next()) {
 				MusicBean session = new MusicBean(rslt.getInt("ID"), rslt.getString("BAND"), rslt.getString("ALBUM"),
-						rslt.getString("PORTION"), rslt.getString("COMMENT"), rslt.getTimestamp("LISTENED_DATE") != null ? rslt.getTimestamp("LISTENED_DATE").toLocalDateTime().toLocalDate() : null);
+						rslt.getString("PORTION"), rslt.getString("COMMENT"), rslt.getTimestamp("LISTENED_DATE") != null ? rslt.getTimestamp("LISTENED_DATE").toLocalDateTime().toLocalDate() : null, rslt.getBoolean("CONCEPT"));
 
 				sessions.add(session);
 			}
@@ -69,11 +70,108 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 				}
 			}
 		}
+		System.out.println("Query getAllListeningSessions returned " + sessions.size() + " rows");
 		return sessions;
 	}
+	
+	
+	@Override
+	public Collection<String> getAllBandsForAlbum(String album) {
+		List<String> bands = new ArrayList<String>();
+		String sql = sqlMapping.getValue("Music.getAllBandsForAlbum");
+		Connection con = null;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, album);
+
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				bands.add(rslt.getString("BAND"));
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getAllBandsForAlbum failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query getAllBandsForAlbum returned " + bands.size() + " rows");
+		return bands;
+	}
+	
+	@Override
+	public Collection<String> getAllAlbumsForBand(String band) {
+		List<String> albums = new ArrayList<String>();
+		String sql = sqlMapping.getValue("Music.getAllAlbumsForBand");
+		Connection con = null;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, band);
+
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				albums.add(rslt.getString("ALBUM"));
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getAllAlbumsForBand failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query getAllAlbumsForBand returned " + albums.size() + " rows");
+		return albums;
+	}
+	
 
 	@Override
-	public void addListeningSession(String band, String album, String portion, String comment, LocalDate date) {
+	public void addListeningSession(String band, String album, String portion, String comment, LocalDate date, Boolean concept) {
 		String sql = sqlMapping.getValue("Music.addListeningSession");
 		Connection con = null;
 		int result = 0;
@@ -99,6 +197,11 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 				ps.setTimestamp(5, Timestamp.valueOf(date.atStartOfDay()));
 			} else {
 				ps.setNull(5, Types.TIMESTAMP);
+			}
+			if (concept != null) {
+				ps.setBoolean(6, concept);
+			} else {
+				ps.setNull(6, Types.BOOLEAN);
 			}
 			result = ps.executeUpdate();
 			con.commit();
@@ -128,6 +231,71 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 		}
 		System.out.println("Query addListeningSession updated " + result + " rows");
 	};
+	
+	
+	@Override
+	public void editListeningSession(String band, String album, String portion, String comment, LocalDate date, Boolean concept, Integer id) {
+		String sql = sqlMapping.getValue("Music.editListeningSession");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			java.sql.PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, band);
+			ps.setString(2, album);
+			if (portion != null) {
+				ps.setString(3, portion);
+			} else {
+				ps.setNull(3, Types.VARCHAR);
+			}
+			if (comment != null) {
+				ps.setString(4, comment);
+			} else {
+				ps.setNull(4, Types.VARCHAR);
+			}
+			if (date != null) {
+				ps.setTimestamp(5, Timestamp.valueOf(date.atStartOfDay()));
+			} else {
+				ps.setNull(5, Types.TIMESTAMP);
+			}
+			if (concept != null) {
+				ps.setBoolean(6, concept);
+			} else {
+				ps.setNull(6, Types.BOOLEAN);
+			}
+			ps.setInt(7,  id);
+			
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query editListeningSession failed \n" + e);
+			Notification.show("Faled to edit Listening Session, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query editListeningSession updated " + result + " rows");
+	};
 
 	public Collection<String> getAllBands() {
 		Collection<String> bands = new ArrayList<String>();
@@ -145,7 +313,7 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 			ResultSet rslt = ps.executeQuery();
 			con.commit();
 			while (rslt.next()) {
-				bands.add(rslt.getString("NAME"));
+				bands.add(rslt.getString("BAND"));
 			}
 			rslt.close();
 		} catch (SQLException e) {
@@ -171,6 +339,7 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 				}
 			}
 		}
+		System.out.println("Query getAllBands returned " + bands.size() + " rows");
 		return bands;
 	}
 
@@ -216,138 +385,8 @@ public class MusicDAOImpl extends AbstractDAO implements IMusicDAO {
 				}
 			}
 		}
+		System.out.println("Query getAllAlbums returned " + albums.size() + " rows");
 		return albums;
 	}
 
-	// @Override
-	// public void editMovie(String name, Boolean watched, Double rating, String
-	// comment, Date date, Boolean recommend, String watchedBecause, Double
-	// sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Integer id) {
-	// String sql = sqlMapping.getValue("Movie.editMovie");
-	// Connection con = null;
-	// int result = 0;
-	// try {
-	// con = MSSQLDAOFactory.getConnection();
-	// con.setAutoCommit(false);
-	//
-	// PreparedStatement ps = con.prepareStatement(sql);
-	//
-	// if (comment != null) {
-	// ps.setString(1, comment);
-	// } else {
-	// ps.setNull(1, Types.VARCHAR);
-	// }
-	// if (rating != null) {
-	// ps.setDouble(2, rating);
-	// } else {
-	// ps.setNull(2, Types.FLOAT);
-	// }
-	// if (recommend != null) {
-	// ps.setBoolean(3, recommend);
-	// } else {
-	// ps.setNull(3, Types.BIT);
-	// }
-	// ps.setBoolean(4, watched);
-	// if (date != null) {
-	// ps.setDate(5, date);
-	// } else {
-	// ps.setNull(5, Types.TIMESTAMP);
-	// }
-	// ps.setString(6, name);
-	// if (watchedBecause != null) {
-	// ps.setString(7, watchedBecause);
-	// } else {
-	// ps.setNull(7, Types.VARCHAR);
-	// }
-	// if (sadnessLevel != null) {
-	// ps.setDouble(8, sadnessLevel);
-	// } else {
-	// ps.setNull(8, Types.DOUBLE);
-	// }
-	// if (desireLevel != null) {
-	// ps.setInt(9, desireLevel);
-	// } else {
-	// ps.setNull(9, Types.INTEGER);
-	// }
-	// if (rewatchNeeded != null) {
-	// ps.setBoolean(10, rewatchNeeded);
-	// } else {
-	// ps.setNull(10, Types.BIT);
-	// }
-	// ps.setInt(11, id);
-	//
-	// result = ps.executeUpdate();
-	// con.commit();
-	// } catch (SQLException e) {
-	// System.out.println("Query editMovie failed \n" + e);
-	// Notification.show("Faled to edit Movie, sorry...", Type.ERROR_MESSAGE);
-	// if (con != null) {
-	// try {
-	// System.out.println("The transaction is rolled back \n" + e);
-	// con.rollback();
-	// con.close();
-	// } catch (SQLException ex) {
-	// System.out.println(ex);
-	// }
-	// } else {
-	// System.out.println("Unable to establish DB connection: " +
-	// e.getMessage());
-	// System.out.println(e);
-	// }
-	// } finally {
-	// if (con != null) {
-	// try {
-	// con.close();
-	// } catch (SQLException e) {
-	// System.out.println(e);
-	// }
-	// }
-	// }
-	// System.out.println("Query editMovie updated " + result + " rows");
-	// };
-	//
-	// @Override
-	// public void deleteMovie(Integer id) {
-	// String sql = sqlMapping.getValue("Movie.deleteMovie");
-	// Connection con = null;
-	// int result = 0;
-	//
-	// try {
-	// con = MSSQLDAOFactory.getConnection();
-	// con.setAutoCommit(false);
-	//
-	// PreparedStatement ps = con.prepareStatement(sql);
-	//
-	// ps.setInt(1, id);
-	//
-	// result = ps.executeUpdate();
-	// con.commit();
-	// } catch (SQLException e) {
-	// System.out.println("Query deleteMovie failed \n" + e);
-	// Notification.show("Faled to delete movie, sorry...", Type.ERROR_MESSAGE);
-	// if (con != null) {
-	// try {
-	// System.out.println("The transaction is rolled back \n" + e);
-	// con.rollback();
-	// con.close();
-	// } catch (SQLException ex) {
-	// System.out.println(ex);
-	// }
-	// } else {
-	// System.out.println("Unable to establish DB connection: " +
-	// e.getMessage());
-	// System.out.println(e);
-	// }
-	// } finally {
-	// if (con != null) {
-	// try {
-	// con.close();
-	// } catch (SQLException e) {
-	// System.out.println(e);
-	// }
-	// }
-	// }
-	// System.out.println("Query deleteMovie updated " + result + " rows");
-	// }
-	//
 }

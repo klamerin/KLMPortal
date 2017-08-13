@@ -1,6 +1,5 @@
 package com.klm.KLMPortal.data.DAO;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -18,7 +17,7 @@ public interface IMovieDAO {
 	
 //	public void addToWatchMovie(String name, String comment);
 	public void addNewMovie(String name, Boolean watched, Double rating, String comment, LocalDate date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Boolean withTina);
-	public void editMovie(String name, Boolean watched, Double rating, String comment, LocalDate date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Boolean withTina, Integer id);
+	public void editMovie(String name, Boolean watched, Double rating, String comment, LocalDate date, Boolean recommend, String watchedBecause, Double sadnessLevel, Integer desireLevel, Boolean rewatchNeeded, Boolean withTina, Integer watchCount, Integer id);
 	public void deleteMovie(Integer id);
 	public void incrementWatchCount(Integer id);
 	

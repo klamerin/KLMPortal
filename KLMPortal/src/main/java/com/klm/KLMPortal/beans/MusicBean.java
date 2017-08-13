@@ -10,12 +10,13 @@ public class MusicBean {
 	private String comment;
 	private String portion;
 	private LocalDate sessionDate;
+	private Boolean concept;
 
 	public MusicBean() {
 		super();
 	}
 
-	public MusicBean(Integer id, String bandName, String albumName, String portion, String comment, LocalDate sessionDate) {
+	public MusicBean(Integer id, String bandName, String albumName, String portion, String comment, LocalDate sessionDate, Boolean concept) {
 		super();
 		this.id = id;
 		this.bandName = bandName;
@@ -23,6 +24,7 @@ public class MusicBean {
 		this.comment = comment;
 		this.portion = portion;
 		this.sessionDate = sessionDate;
+		this.concept = concept;
 	}
 	
 
@@ -72,6 +74,14 @@ public class MusicBean {
 
 	public void setSessionDate(LocalDate sessionDate) {
 		this.sessionDate = sessionDate;
+	}
+
+	public Boolean getConcept() {
+		return concept;
+	}
+
+	public void setConcept(Boolean concept) {
+		this.concept = concept;
 	}
 
 		

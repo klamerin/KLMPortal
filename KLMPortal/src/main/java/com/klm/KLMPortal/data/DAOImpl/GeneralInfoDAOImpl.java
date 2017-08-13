@@ -9,7 +9,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import com.klm.KLMPortal.beans.EventBean;
+import com.klm.KLMPortal.beans.GeneralEventBean;
 import com.klm.KLMPortal.beans.InfoBean;
+import com.klm.KLMPortal.beans.MonthlyEventBean;
+import com.klm.KLMPortal.beans.PostEventBean;
 import com.klm.KLMPortal.data.AbstractDAO;
 import com.klm.KLMPortal.data.MSSQLDAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
@@ -262,6 +265,7 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 		}
 		return events;
 	}
+	
 	
 	
 	@Override
@@ -661,5 +665,629 @@ public class GeneralInfoDAOImpl extends AbstractDAO implements IGeneralInfoDAO {
 		}
 		System.out.println("Query deleteEvent updated " + result + " rows");
 	}
+	
+	
+	
+	@Override
+	public ArrayList<GeneralEventBean> getAllGeneralEvents() {
+		ArrayList<GeneralEventBean> events = new ArrayList<GeneralEventBean>();
+		String sql = sqlMapping.getValue("GeneralInfo.getAllGeneralEvents");
+		Connection con = null;
 
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				GeneralEventBean event = new GeneralEventBean(rslt.getInt("ID"), rslt.getString("EVENT_NAME"), rslt.getString("EVENT_DESCRIPTION"), rslt.getString("COMMENT"), rslt.getDate("EVENT_DATE") != null ? rslt.getDate("EVENT_SET_DATE").toLocalDate() : null);
+				events.add(event);
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getAllGeneralEvents failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		return events;
+	}
+
+
+	@Override
+	public void addNewGeneralEvent(String eventName, String eventDescription, String comment, LocalDate eventDate) {
+		String sql = sqlMapping.getValue("GeneralInfo.addNewGeneralEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, eventName);
+			
+			if (eventDescription == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, eventDescription);
+			}
+			if (comment == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, comment);
+			}
+			if (eventDate == null) {
+				ps.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+			} else {
+				ps.setDate(4, java.sql.Date.valueOf(eventDate));
+			}
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query addNewGeneralEvent failed \n" + e);
+			Notification.show("Faled to add New General Event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query addNewGeneralEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void  updateGeneralEvent(Integer eventId, String eventName, String eventDescription, String comment, LocalDate eventDate) {
+		String sql = sqlMapping.getValue("GeneralInfo.updateGeneralEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, eventName);
+			
+			if (eventDescription == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, eventDescription);
+			}
+			
+			if (comment == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, comment);
+			}
+			if (eventDate == null) {
+				ps.setDate(4, new java.sql.Date(System.currentTimeMillis()));
+			} else {
+				ps.setDate(4, java.sql.Date.valueOf(eventDate));
+			}
+			
+			ps.setInt(5, eventId);
+			
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query updateNewGeneralEvent failed \n" + e);
+			Notification.show("Faled to update General Event comment, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query updateNewGeneralEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void deleteGeneralEvent(Integer eventId) {
+		String sql = sqlMapping.getValue("GeneralInfo.deleteGeneralEvent");
+		Connection con = null;
+		int result = 0;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, eventId);
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query deleteGeneralEvent failed \n" + e);
+			Notification.show("Faled to delete general event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query deleteGeneralEvent updated " + result + " rows");
+	}
+	
+	
+	
+	@Override
+	public ArrayList<MonthlyEventBean> getAllMonthlyEvents() {
+		ArrayList<MonthlyEventBean> events = new ArrayList<MonthlyEventBean>();
+		String sql = sqlMapping.getValue("GeneralInfo.getAllMonthlyEvents");
+		Connection con = null;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				MonthlyEventBean event = new MonthlyEventBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getString("DESCRIPTION"), rslt.getInt("AMOUNT"), rslt.getString("COMMENT"));
+				events.add(event);
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getAllMonthlyEvents failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		return events;
+	}
+
+
+	@Override
+	public void addNewMonthlyEvent(MonthlyEventBean bean) {
+		String sql = sqlMapping.getValue("GeneralInfo.addNewMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, bean.getName());
+			
+			if (bean.getDescription() == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, bean.getDescription());
+			}
+			if (bean.getComment() == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, bean.getComment());
+			}
+			if (bean.getAmount() == null) {
+				ps.setInt(4, Types.INTEGER);
+			} else {
+				ps.setInt(4, bean.getAmount());
+			}
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query addNewMonthlyEvent failed \n" + e);
+			Notification.show("Faled to add New Monthly Event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query addNewMonthlyEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void updateMonthlyEvent(MonthlyEventBean bean) {
+		String sql = sqlMapping.getValue("GeneralInfo.updateMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, bean.getName());
+			
+			if (bean.getDescription() == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, bean.getDescription());
+			}
+			if (bean.getComment() == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, bean.getComment());
+			}
+			if (bean.getAmount() == null) {
+				ps.setInt(4, Types.INTEGER);
+			} else {
+				ps.setInt(4, bean.getAmount());
+			}
+			
+			ps.setInt(5, bean.getId());
+			
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query updateMonthlyEvent failed \n" + e);
+			Notification.show("Faled to update Monthly Event comment, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query updateMonthlyEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void deleteMonthlyEvent(Integer eventId) {
+		String sql = sqlMapping.getValue("GeneralInfo.deleteMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, eventId);
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query deleteMonthlyEvent failed \n" + e);
+			Notification.show("Faled to delete monthly event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query deleteMonthlyEvent updated " + result + " rows");
+	}
+	
+	
+	@Override
+	public ArrayList<PostEventBean> getPostEvents(boolean notReceived) {
+		ArrayList<MonthlyEventBean> events = new ArrayList<MonthlyEventBean>();
+		String sql = sqlMapping.getValue("GeneralInfo.getAllMonthlyEvents");
+		Connection con = null;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+			ResultSet rslt = ps.executeQuery();
+			con.commit();
+			while (rslt.next()) {
+				MonthlyEventBean event = new MonthlyEventBean(rslt.getInt("ID"), rslt.getString("NAME"), rslt.getString("DESCRIPTION"), rslt.getInt("AMOUNT"), rslt.getString("COMMENT"));
+				events.add(event);
+			}
+			rslt.close();
+		} catch (SQLException e) {
+			System.out.println("Query getAllMonthlyEvents failed \n" + e);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		return events;
+	}
+
+
+	@Override
+	public void addNewMonthlyEvent(MonthlyEventBean bean) {
+		String sql = sqlMapping.getValue("GeneralInfo.addNewMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, bean.getName());
+			
+			if (bean.getDescription() == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, bean.getDescription());
+			}
+			if (bean.getComment() == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, bean.getComment());
+			}
+			if (bean.getAmount() == null) {
+				ps.setInt(4, Types.INTEGER);
+			} else {
+				ps.setInt(4, bean.getAmount());
+			}
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query addNewMonthlyEvent failed \n" + e);
+			Notification.show("Faled to add New Monthly Event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query addNewMonthlyEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void updateMonthlyEvent(MonthlyEventBean bean) {
+		String sql = sqlMapping.getValue("GeneralInfo.updateMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setString(1, bean.getName());
+			
+			if (bean.getDescription() == null) {
+				ps.setNull(2, Types.VARCHAR);
+			} else {
+				ps.setString(2, bean.getDescription());
+			}
+			if (bean.getComment() == null) {
+				ps.setNull(3, Types.VARCHAR);
+			} else {
+				ps.setString(3, bean.getComment());
+			}
+			if (bean.getAmount() == null) {
+				ps.setInt(4, Types.INTEGER);
+			} else {
+				ps.setInt(4, bean.getAmount());
+			}
+			
+			ps.setInt(5, bean.getId());
+			
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query updateMonthlyEvent failed \n" + e);
+			Notification.show("Faled to update Monthly Event comment, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query updateMonthlyEvent updated " + result + " rows");
+	}
+	
+	@Override
+	public void deleteMonthlyEvent(Integer eventId) {
+		String sql = sqlMapping.getValue("GeneralInfo.deleteMonthlyEvent");
+		Connection con = null;
+		int result = 0;
+
+		try {
+			con = MSSQLDAOFactory.getConnection();
+			con.setAutoCommit(false);
+
+			PreparedStatement ps = con.prepareStatement(sql);
+
+			ps.setInt(1, eventId);
+
+			result = ps.executeUpdate();
+			con.commit();
+		} catch (SQLException e) {
+			System.out.println("Query deleteMonthlyEvent failed \n" + e);
+			Notification.show("Faled to delete monthly event, sorry...", Type.ERROR_MESSAGE);
+			if (con != null) {
+				try {
+					System.out.println("The transaction is rolled back \n" + e);
+					con.rollback();
+					con.close();
+				} catch (SQLException ex) {
+					System.out.println(ex);
+				}
+			} else {
+				System.out.println("Unable to establish DB connection: " + e.getMessage());
+				System.out.println(e);
+			}
+		} finally {
+			if (con != null) {
+				try {
+					con.close();
+				} catch (SQLException e) {
+					System.out.println(e);
+				}
+			}
+		}
+		System.out.println("Query deleteMonthlyEvent updated " + result + " rows");
+	}
+	
 }

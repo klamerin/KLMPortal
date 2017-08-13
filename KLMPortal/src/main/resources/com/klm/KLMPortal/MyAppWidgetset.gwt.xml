@@ -17,4 +17,8 @@
     
 
     <inherits name="com.vaadin.v7.Vaadin7WidgetSet" />
+
+    <inherits name="org.vaadin.addons.autocomplete.Widgetset" />
+
+    <inherits name="com.vaadin.contextmenu.WidgetSet" />
 </module>
