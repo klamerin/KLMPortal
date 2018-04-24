@@ -41,11 +41,11 @@ public class Events extends VerticalLayout {
 	}
 
 	private void setEventLayout() {
-		setMargin(true);
+//		setMargin(true);
 		setSpacing(true);
 
 		eventsButtonLayout.setSpacing(true);
-		eventsButtonLayout.setMargin(true);
+//		eventsButtonLayout.setMargin(true);
 		postEventsButton = new Button("POST", new EventButtonListener(EvenType.POST));
 		eventsButtonLayout.addComponent(postEventsButton);
 

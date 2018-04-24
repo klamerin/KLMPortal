@@ -41,7 +41,7 @@ public class EventMonthly extends HorizontalLayout {
 
 	private void buildMainLayout() {
 		setSpacing(true);
-		setMargin(true);
+//		setMargin(true);
 		setSizeFull();
 		setMonthlyEvents();
 		setStyleName("generalInfoBackground");
@@ -77,10 +77,13 @@ public class EventMonthly extends HorizontalLayout {
 
 		monthlyEventsTable = new Grid<MonthlyEventBean>(MonthlyEventBean.class);
 		monthlyEventsTable.setStyleName("infoTable");
+		monthlyEventsTable.setWidth("80%");
 		setMonthlyEventTable();
 		GridContextMenu<MonthlyEventBean> contextMenu = new GridContextMenu<MonthlyEventBean>(monthlyEventsTable);
 		setEventsActionHandler(contextMenu);
 		addComponent(monthlyEventsTable);
+		setExpandRatio(addNewEventButton, 1);
+		setExpandRatio(monthlyEventsTable, 8);
 	}
 
 	private void openEventWindow(MonthlyEventBean eventBean, boolean enabledForEditing) {
@@ -97,27 +100,27 @@ public class EventMonthly extends HorizontalLayout {
 
 		VerticalLayout eventLayout = new VerticalLayout();
 		eventLayout.setSpacing(true);
-		eventLayout.setMargin(true);
+//		eventLayout.setMargin(true);
 
-		final TextField eventNameField = new TextField();
+		final TextField eventNameField = new TextField("Name");
 		eventNameField.setPlaceholder("enter event name");
 		if (!enabledForEditing) {
 			eventNameField.setReadOnly(true);
 		}
 
-		final TextField amountField = new TextField();
+		final TextField amountField = new TextField("Amount");
 		amountField.setPlaceholder("enter amount");
 		if (!enabledForEditing) {
 			amountField.setReadOnly(true);
 		}
 
-		final TextField descriptionField = new TextField();
+		final TextField descriptionField = new TextField("Description");
 		descriptionField.setPlaceholder("enter description");
 		if (!enabledForEditing) {
 			descriptionField.setReadOnly(true);
 		}
 
-		final TextField eventCommentField = new TextField();
+		final TextField eventCommentField = new TextField("Comment");
 		eventCommentField.setPlaceholder("enter comment");
 		if (!enabledForEditing) {
 			eventCommentField.setReadOnly(true);
@@ -125,7 +128,7 @@ public class EventMonthly extends HorizontalLayout {
 
 		binder.forField(eventNameField).withValidator(str -> str.length() > 0, "Must be at least 2 chars")
 				.bind(MonthlyEventBean::getName, MonthlyEventBean::setName);
-		binder.forField(amountField).withConverter(new StringToIntegerConverter("Must be Integer"))
+		binder.forField(amountField).withNullRepresentation("0").withConverter(new StringToIntegerConverter("Must be Integer"))
 				.bind(MonthlyEventBean::getAmount, MonthlyEventBean::setAmount);
 		binder.bind(descriptionField, MonthlyEventBean::getDescription, MonthlyEventBean::setDescription);
 		binder.bind(eventCommentField, MonthlyEventBean::getComment, MonthlyEventBean::setComment);
@@ -134,7 +137,6 @@ public class EventMonthly extends HorizontalLayout {
 		eventLayout.addComponent(amountField);
 		eventLayout.addComponent(descriptionField);
 		eventLayout.addComponent(eventCommentField);
-
 		
 		binder.readBean(eventBean);
 		

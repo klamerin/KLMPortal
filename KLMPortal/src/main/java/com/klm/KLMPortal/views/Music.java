@@ -125,7 +125,7 @@ public class Music extends VerticalLayout implements View {
 		addComponent(musicLayout);
 		setExpandRatio(navLayout, 2);
 		setExpandRatio(musicLayout, 10);
-		init();
+		initView();
 	}
 
 	private void setNavLayout() {
@@ -197,7 +197,7 @@ public class Music extends VerticalLayout implements View {
 		}
 	}
 
-	private void init() {
+	private void initView() {
 		setAlbumAutoCompleteSuggestions(null);
 		setBandAutoCompleteSuggestions(null);
 		setMusicLayout();
@@ -207,7 +207,7 @@ public class Music extends VerticalLayout implements View {
 		musicLayout.addComponent(buttonsLayout);
 		musicLayout.addComponent(sessionsLayout);
 		musicLayout.setExpandRatio(buttonsLayout, 1);
-		musicLayout.setExpandRatio(sessionsLayout, 4);
+		musicLayout.setExpandRatio(sessionsLayout, 10);
 		musicLayout.setSpacing(true);
 	}
 
@@ -219,7 +219,7 @@ public class Music extends VerticalLayout implements View {
 
 	private void setSessionsTable() {
 		sessionsTable = new Grid<MusicBean>(MusicBean.class);
-		sessionsTable.setWidth("70%");
+		sessionsTable.setWidth("80%");
 		sessionsTable.setStyleName("moviesTable");
 		sessionsTable.setItems(musicDAO.getAllListeningSessions());
 		sessionsTable.setHeightByRows(15);

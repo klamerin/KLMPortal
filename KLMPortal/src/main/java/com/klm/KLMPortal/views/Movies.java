@@ -1,7 +1,6 @@
 package com.klm.KLMPortal.views;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -85,6 +84,7 @@ public class Movies extends VerticalLayout implements View {
 
 	private Button addMovieButton;
 	private ComboBox<TableType> moviesCombobox;
+	private ComboBox<MovieBean> searchMovieComboBox;
 
 	/*
 	 * —————————————————————————————————————————————————\
@@ -113,7 +113,6 @@ public class Movies extends VerticalLayout implements View {
 	private Button editButton;
 	private Button submitButton;
 	private Button deleteButton;
-	private ComboBox<MovieBean> searchMovieComboBox;
 	private CheckBox socialCheckBox;
 
 	/*
@@ -263,7 +262,7 @@ public class Movies extends VerticalLayout implements View {
 		setTableLayout();
 
 		addComponent(moviesLayout);
-		setExpandRatio(navLayout, 2);
+		setExpandRatio(navLayout, 1);
 		setExpandRatio(moviesLayout, 10);
 		initTable();
 	}
@@ -273,7 +272,6 @@ public class Movies extends VerticalLayout implements View {
 		buttonsLayout.setSizeFull();
 
 		moviesCombobox = new ComboBox<TableType>("Show");
-
 		moviesCombobox.setItemCaptionGenerator(tableType -> tableType.getTableTypeValue());
 		moviesCombobox.setItems(TableType.values());
 
@@ -300,7 +298,7 @@ public class Movies extends VerticalLayout implements View {
 //		moviesTable.setSelectionMode(SelectionMode.SINGLE);
 		SingleSelectionModel<MovieBean> model = (SingleSelectionModel<MovieBean>) moviesTable.getSelectionModel();
 		model.addSingleSelectionListener(movieItemClickListener);
-		moviesTable.setWidth("80%");
+		moviesTable.setWidth("100%");
 //		moviesTable.addSelectionListener(movieItemClickListener);
 		// moviesTable.addItemClickListener(movieItemClickListener);
 
@@ -308,7 +306,7 @@ public class Movies extends VerticalLayout implements View {
 		tableLayout.setExpandRatio(moviesTable, 20);
 
 		moviesLayout.addComponent(tableLayout);
-		moviesLayout.setExpandRatio(tableLayout, 5.0f);
+		moviesLayout.setExpandRatio(tableLayout, 10.0f);
 	}
 
 	/*

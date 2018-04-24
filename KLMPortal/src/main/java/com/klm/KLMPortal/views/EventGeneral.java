@@ -41,7 +41,7 @@ public class EventGeneral extends HorizontalLayout {
 
 	private void buildMainLayout() {
 		setSpacing(true);
-		setMargin(true);
+//		setMargin(true);
 		setSizeFull();
 		setStyleName("generalInfoBackground");
 		setGeneralEvents();
@@ -56,10 +56,13 @@ public class EventGeneral extends HorizontalLayout {
 		generalEventsTable = new Grid<GeneralEventBean>(
 				GeneralEventBean.class);
 		generalEventsTable.setStyleName("infoTable");
+		generalEventsTable.setWidth("80%");
 		setGeneralEventTable();
 		GridContextMenu<GeneralEventBean> contextMenu = new GridContextMenu<GeneralEventBean>(generalEventsTable);
 		setEventsActionHandler(contextMenu);
 		addComponent(generalEventsTable);
+		setExpandRatio(addNewEventButton, 1);
+		setExpandRatio(generalEventsTable, 8);
 	}
 
 	private void setEventsActionHandler(GridContextMenu<GeneralEventBean> contextMenu) {
@@ -89,9 +92,9 @@ public class EventGeneral extends HorizontalLayout {
 
 		VerticalLayout eventLayout = new VerticalLayout();
 		eventLayout.setSpacing(true);
-		eventLayout.setMargin(true);
+//		eventLayout.setMargin(true);
 
-		final TextField eventNameField = new TextField();
+		final TextField eventNameField = new TextField("Name");
 		if (eventBean == null) {
 			eventNameField.setPlaceholder("enter event name");
 		} else {
@@ -102,9 +105,9 @@ public class EventGeneral extends HorizontalLayout {
 		}
 		eventNameField.setWidth("70%");
 		
-		final TextField eventDescriptionField = new TextField();
+		final TextField eventDescriptionField = new TextField("Description");
 		if (eventBean == null) {
-			eventDescriptionField.setPlaceholder("enter description name");
+			eventDescriptionField.setPlaceholder("enter description");
 		} else {
 			eventDescriptionField.setValue(eventBean.getEventDescription() != null ? eventBean.getEventDescription() : "");
 			if (!enabledForEditing) {
@@ -121,7 +124,7 @@ public class EventGeneral extends HorizontalLayout {
 			}
 		}
 
-		final TextField eventCommentField = new TextField();
+		final TextField eventCommentField = new TextField("Comment");
 		if (eventBean == null) {
 			eventCommentField.setPlaceholder("enter comment");
 		} else {

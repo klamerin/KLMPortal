@@ -1,5 +1,7 @@
 package com.klm.KLMPortal.views;
 
+import java.time.LocalDate;
+
 import com.klm.KLMPortal.beans.TodoEventBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
@@ -7,12 +9,15 @@ import com.vaadin.contextmenu.GridContextMenu;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -39,7 +44,7 @@ public class EventToDo extends HorizontalLayout {
 	}
 
 	private void buildMainLayout() {
-		setMargin(true);
+//		setMargin(true);
 		setSpacing(true);
 		setSizeFull();
 		setTODOEvents();
@@ -47,45 +52,21 @@ public class EventToDo extends HorizontalLayout {
 	}
 
 	private void setTODOEvents() {
-		addNewEventButton = new Button("Add TODO", new AddEventButtonListener());
+		addNewEventButton = new Button("Add", new AddEventButtonListener());
 
 		addComponent(addNewEventButton);
 		setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
 
 		toDoEventsTable = new Grid<TodoEventBean>(
-				TodoEventBean.class);/*
-										 * {
-										 * 
-										 * @Override protected String
-										 * formatPropertyValue(Object rowId,
-										 * Object colId, Property<?> property) {
-										 * Object v = property.getValue(); if (v
-										 * instanceof Date) { SimpleDateFormat
-										 * df = new
-										 * SimpleDateFormat("dd/MM/yyyy"); Date
-										 * dateValue = (Date) v; return
-										 * df.format(dateValue); } return
-										 * super.formatPropertyValue(rowId,
-										 * colId, property); } };
-										 */
+				TodoEventBean.class);
 		toDoEventsTable.setStyleName("infoTable");
-		/*
-		 * toDoEventsTable.addGeneratedColumn("Done?", new ColumnGenerator() {
-		 * 
-		 * private static final long serialVersionUID = 1L;
-		 * 
-		 * @Override public Object generateCell(Table source, Object itemId,
-		 * Object columnId) { EventBean currentEvent = (EventBean) itemId; if
-		 * (currentEvent.getComment().equals(EvenType.TODO.undone)) { return new
-		 * Button("Done!", new
-		 * SetEventETADateNowButtonListener(currentEvent.getId())); } else {
-		 * return new Embedded(null, new ThemeResource("icons/done_main.png"));
-		 * } } });
-		 */
+		toDoEventsTable.setWidth("100%");
 		setToDoEventTable();
 		GridContextMenu<TodoEventBean> contextMenu = new GridContextMenu<TodoEventBean>(toDoEventsTable);
 		setEventsActionHandler(contextMenu);
 		addComponent(toDoEventsTable);
+		setExpandRatio(addNewEventButton, 1);
+		setExpandRatio(toDoEventsTable, 9);
 	}
 
 	private void setEventsActionHandler(GridContextMenu<TodoEventBean> contextMenu) {
@@ -123,14 +104,16 @@ public class EventToDo extends HorizontalLayout {
 
 		VerticalLayout eventLayout = new VerticalLayout();
 		eventLayout.setSpacing(true);
-		eventLayout.setMargin(true);
+//		eventLayout.setMargin(true);
 
 		final TextField eventNameField = new TextField("Name");
+		eventNameField.setWidth("70%");
 		if (!enabledForEditing) {
 			eventNameField.setReadOnly(true);
 		}
 
 		final TextField eventDescriptionField = new TextField("Description");
+		eventNameField.setWidth("70%");
 		if (!enabledForEditing) {
 			eventDescriptionField.setReadOnly(true);
 		}
@@ -144,16 +127,27 @@ public class EventToDo extends HorizontalLayout {
 		if (!enabledForEditing) {
 			eventETADateField.setReadOnly(true);
 		}
+		HorizontalLayout datesLayout = new HorizontalLayout();
+		datesLayout.addComponent(eventSetDateField);
+		datesLayout.addComponent(eventETADateField);
 
-		final TextField eventCommentField = new TextField();
+		final TextField eventCommentField = new TextField("Comment");
+		eventNameField.setWidth("70%");
 		if (!enabledForEditing) {
 			eventCommentField.setReadOnly(true);
 		}
-
+		
+		binder.bind(eventNameField, TodoEventBean::getName, TodoEventBean::setName);
+		binder.bind(eventDescriptionField, TodoEventBean::getDescription, TodoEventBean::setDescription);
+		binder.bind(eventSetDateField, TodoEventBean::getSetDate, TodoEventBean::setSetDate);
+		binder.bind(eventETADateField, TodoEventBean::getEtaDate, TodoEventBean::setEtaDate);
+		binder.bind(eventCommentField, TodoEventBean::getComment, TodoEventBean::setComment);
+		
+		
 		eventLayout.addComponent(eventNameField);
-		eventLayout.addComponent(eventSetDateField);
-		eventLayout.addComponent(eventETADateField);
+		eventLayout.addComponent(eventDescriptionField);
 		eventLayout.addComponent(eventCommentField);
+		eventLayout.addComponent(datesLayout);
 
 		binder.readBean(eventBean);
 
@@ -184,14 +178,19 @@ public class EventToDo extends HorizontalLayout {
 	}
 
 	private void setToDoEventTable() {
-		toDoEventsTable.setItems(generalInfoDAO.getAllToDoEvents());
-		toDoEventsTable.setColumns("name", "description", "comment", "setDate", "etaDate"/* , "Done?" */);
+		toDoEventsTable.setItems(generalInfoDAO.getToDoEvents(false));
+		toDoEventsTable.setColumns("name", "description", "comment", "setDate", "etaDate");
 		toDoEventsTable.getColumn("name").setCaption("Name");
 		toDoEventsTable.getColumn("description").setCaption("Description");
 		toDoEventsTable.getColumn("comment").setCaption("Comment");
 		toDoEventsTable.getColumn("setDate").setCaption("Set Date");
 		toDoEventsTable.getColumn("etaDate").setCaption("ETA Date");
-		// toDoEventsTable.getColumn("Done?").setCaption("Done?");
+		Column<TodoEventBean, ?> doneColumn = toDoEventsTable.addComponentColumn(todo -> {
+			return todo.getDone() ?  new Embedded(null, new
+					 ThemeResource("icons/done_main.png")) :
+		     new Button("Done!", new SetTodoDoneButtonListener(todo));
+		});
+		doneColumn.setCaption("Done?");
 	}
 
 	private class AddEventButtonListener implements ClickListener {
@@ -236,5 +235,24 @@ public class EventToDo extends HorizontalLayout {
 			eventWindow.close();
 		}
 	}
+	
+	private class SetTodoDoneButtonListener implements ClickListener {
 
+		private static final long serialVersionUID = 1L;
+
+		private TodoEventBean todoBean;
+		
+		public SetTodoDoneButtonListener(TodoEventBean todoBean) {
+			this.todoBean = todoBean;
+		}
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			todoBean.setDoneDate(LocalDate.now());
+			todoBean.setDone(true);
+			generalInfoDAO.updateToDoEvent(todoBean);
+			setToDoEventTable();
+		}
+		
+	}
 }

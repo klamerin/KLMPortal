@@ -1,5 +1,7 @@
 package com.klm.KLMPortal.views;
 
+import java.time.LocalDate;
+
 import com.klm.KLMPortal.beans.PostEventBean;
 import com.klm.KLMPortal.data.DAOFactory;
 import com.klm.KLMPortal.data.DAO.IGeneralInfoDAO;
@@ -7,13 +9,16 @@ import com.vaadin.contextmenu.GridContextMenu;
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
 import com.vaadin.icons.VaadinIcons;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.DateField;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Grid;
+import com.vaadin.ui.Grid.Column;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
@@ -41,14 +46,14 @@ public class EventPost extends HorizontalLayout {
 
 	private void buildMainLayout() {
 		setSpacing(true);
-		setMargin(true);
+//		setMargin(true);
 		setSizeFull();
 		setPostEvents();
 		setStyleName("generalInfoBackground");
 	}
 
 	private void setPostEvents() {
-		addNewEventButton = new Button("Add Post", new AddEventButtonListener());
+		addNewEventButton = new Button("Add", new AddEventButtonListener());
 
 		addComponent(addNewEventButton);
 		setComponentAlignment(addNewEventButton, Alignment.TOP_LEFT);
@@ -65,6 +70,7 @@ public class EventPost extends HorizontalLayout {
 		 * colId, property); } };
 		 */
 		postEventsTable.setStyleName("infoTable");
+		postEventsTable.setWidth("80%");
 		// postEventsTable.addGeneratedColumn("Received?", new ColumnGenerator()
 		// {
 		//
@@ -89,6 +95,8 @@ public class EventPost extends HorizontalLayout {
 		setEventsActionHandler(contextMenu);
 
 		addComponent(postEventsTable);
+		setExpandRatio(addNewEventButton, 1);
+		setExpandRatio(postEventsTable, 8);
 	}
 
 	private void setEventsActionHandler(GridContextMenu<PostEventBean> contextMenu) {
@@ -125,7 +133,7 @@ public class EventPost extends HorizontalLayout {
 
 		VerticalLayout eventLayout = new VerticalLayout();
 		eventLayout.setSpacing(true);
-		eventLayout.setMargin(true);
+//		eventLayout.setMargin(true);
 
 		final TextField eventNameField = new TextField("Name");
 		if (!enabledForEditing) {
@@ -185,11 +193,18 @@ public class EventPost extends HorizontalLayout {
 
 	private void setPostEventTable() {
 		postEventsTable.setItems(generalInfoDAO.getPostEvents(false));
-		postEventsTable.setColumns("name", "description", "eventSetDate", "received");
+		postEventsTable.setColumns("name", "description", "eventSetDate");
 		postEventsTable.getColumn("name").setCaption("Name");
 		postEventsTable.getColumn("description").setCaption("Description");
 		postEventsTable.getColumn("eventSetDate").setCaption("Set Date");
-		postEventsTable.getColumn("received").setCaption("Received");
+		
+		Column<PostEventBean, ?> receivedColumn = postEventsTable.addComponentColumn(post -> {
+			return post.getReceived() ?  new Embedded(null, new
+					 ThemeResource("icons/received_main.png")) :
+		     new Button("Got it!", new SetPostReceivedButtonListener(post));
+		});
+		receivedColumn.setCaption("Received?");
+
 	}
 
 	private class AddEventButtonListener implements ClickListener {
@@ -233,5 +248,25 @@ public class EventPost extends HorizontalLayout {
 			setPostEventTable();
 			eventWindow.close();
 		}
+	}
+	
+	private class SetPostReceivedButtonListener implements ClickListener {
+
+		private static final long serialVersionUID = 1L;
+
+		private PostEventBean postBean;
+		
+		public SetPostReceivedButtonListener(PostEventBean postBean) {
+			this.postBean = postBean;
+		}
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			postBean.setEventSetDate(LocalDate.now());
+			postBean.setReceived(true);
+			generalInfoDAO.updatePostEvent(postBean);
+			setPostEventTable();
+		}
+		
 	}
 }
